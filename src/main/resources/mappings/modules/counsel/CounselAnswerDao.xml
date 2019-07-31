@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ambition.agile.modules.counsel.dao.CounselAnswerDao">
+    
+	<sql id="counselAnswerColumns">
+		a.id AS "id",
+		a.question_id AS "questionId",
+		a.title AS "title",
+		a.content AS "content",
+		a.is_anony AS "isAnony",
+		a.create_by AS "createBy.id",
+		a.create_name as "createName", 
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.del_flag AS "delFlag",
+		a.org_id AS "orgId"
+	</sql>
+	
+	<sql id="counselAnswerJoins">
+	</sql>
+    
+	<select id="get" resultType="CounselAnswer">
+		SELECT 
+			<include refid="counselAnswerColumns"/>
+		FROM counsel_answer a
+		<include refid="counselAnswerJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CounselAnswer">
+		SELECT 
+			<include refid="counselAnswerColumns"/>
+		FROM counsel_answer a
+		<include refid="counselAnswerJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="title != null and title != ''">
+				AND a.title LIKE 
+					<if test="dbName == 'oracle'">'%'||#{title}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{title}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{title},'%')</if>
+			</if>
+			<if test="isAnony != null and isAnony != ''">
+				AND a.is_anony = #{isAnony}
+			</if>
+			<if test="questionId != null and questionId != ''">
+				AND a.question_id = #{questionId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CounselAnswer">
+		SELECT 
+			<include refid="counselAnswerColumns"/>
+		FROM counsel_answer a
+		<include refid="counselAnswerJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO counsel_answer(
+			question_id,
+			title,
+			content,
+			is_anony,
+			create_by,
+			create_name,
+			create_date,
+			del_flag
+		) VALUES (
+			#{questionId},
+			#{title},
+			#{content},
+			#{isAnony},
+			#{createBy.id},
+			#{createName},
+			#{createDate},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE counsel_answer SET 	
+			title = #{title},
+			content = #{content},
+			is_anony = #{isAnony},
+			create_name = #{createName},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE counsel_answer SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

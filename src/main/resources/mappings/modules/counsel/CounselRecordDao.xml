@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ambition.agile.modules.counsel.dao.CounselRecordDao">
+    
+	<sql id="counselRecordColumns">
+		a.id AS "id",
+		a.visitor_id AS "visitorId",
+		a.visitor_name AS "visitorName",
+		a.counselor_id AS "counselorId",
+		a.counselor_name AS "counselorName",
+		a.counsel_date AS "counselDate",
+		a.question_type AS "questionType",
+		a.description AS "description",
+		a.content AS "content",
+		a.is_case AS "isCase",
+		a.is_parentwatch AS "isParentwatch",
+		a.is_studentwatch AS "isStudentwatch",
+		a.create_by AS "createBy.id",
+		a.update_date AS "updateDate",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.del_flag AS "delFlag",
+		a.org_id AS "orgId"
+	</sql>
+	
+	<sql id="counselRecordJoins">
+	</sql>
+    
+	<select id="get" resultType="CounselRecord">
+		SELECT 
+			<include refid="counselRecordColumns"/>
+		FROM counsel_record a
+		<include refid="counselRecordJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CounselRecord">
+		SELECT 
+			<include refid="counselRecordColumns"/>
+		FROM counsel_record a
+		<include refid="counselRecordJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="visitorId != null and visitorId != ''">
+				AND a.visitor_id = #{visitorId}
+			</if>
+			<if test="visitorName != null and visitorName != ''">
+				AND a.visitor_name = #{visitorName}
+			</if>
+			<if test="counselorId != null and counselorId != ''">
+				AND a.counselor_id = #{counselorId}
+			</if>
+			<if test="questionType != null and questionType != ''">
+				AND a.question_type = #{questionType}
+			</if>
+			<if test="isCase != null and isCase != ''">
+				AND a.is_case = #{isCase}
+			</if>
+			<if test="isParentwatch != null and isParentwatch != ''">
+				AND a.is_parentwatch = #{isParentwatch}
+			</if>
+			<if test="isStudentwatch != null and isStudentwatch != ''">
+				AND a.is_studentwatch = #{isStudentwatch}
+			</if>
+			<if test="updateDate != null and updateDate != ''">
+				AND a.update_date = #{updateDate}
+			</if>
+			<if test="orgId != null and orgId != ''">
+				AND a.org_id = #{orgId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CounselRecord">
+		SELECT 
+			<include refid="counselRecordColumns"/>
+		FROM counsel_record a
+		<include refid="counselRecordJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert"  useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO counsel_record(
+			visitor_id,
+			visitor_name,
+			counselor_id,
+			counselor_name,
+			counsel_date,
+			question_type,
+			description,
+			content,
+			is_case,
+			is_parentwatch,
+			is_studentwatch,
+			create_by,
+			update_date,
+			create_date,
+			update_by,
+			del_flag,
+			org_id
+		) VALUES (
+			#{visitorId},
+			#{visitorName},
+			#{counselorId},
+			#{counselorName},
+			#{counselDate},
+			#{questionType},
+			#{description},
+			#{content},
+			#{isCase},
+			#{isParentwatch},
+			#{isStudentwatch},
+			#{createBy.id},
+			#{updateDate},
+			#{createDate},
+			#{updateBy.id},
+			#{delFlag},
+			#{orgId}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE counsel_record SET 	
+			visitor_id = #{visitorId},
+			visitor_name = #{visitorName},
+			counselor_id = #{counselorId},
+			counselor_name = #{counselorName},
+			counsel_date = #{counselDate},
+			question_type = #{questionType},
+			description = #{description},
+			content = #{content},
+			is_case = #{isCase},
+			is_parentwatch = #{isParentwatch},
+			is_studentwatch = #{isStudentwatch},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id},
+			org_id = #{orgId}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE counsel_record SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

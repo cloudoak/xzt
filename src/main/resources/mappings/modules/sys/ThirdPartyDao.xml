@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ambition.agile.modules.sys.dao.ThirdPartyDao">
+
+	<sql id="thirdPartyColumns">
+		a.id AS "id",
+		a.code AS "code",
+		a.name AS "name"
+	</sql>
+    
+	<select id="findAllProvinces" resultType="com.ambition.agile.modules.sys.entity.ThirdParty">
+		SELECT 
+			<include refid="thirdPartyColumns"></include>
+		FROM province a
+		ORDER BY a.id
+	</select>
+	
+	<select id="findByProvinceId" resultType="com.ambition.agile.modules.sys.entity.ThirdParty">
+		SELECT 
+			<include refid="thirdPartyColumns"></include>
+		FROM city a
+		WHERE a.provinceid=#{provinceId}
+		ORDER BY a.provinceid
+	</select>
+	
+	<select id="findByCityId" resultType="com.ambition.agile.modules.sys.entity.ThirdParty">
+		SELECT 
+			<include refid="thirdPartyColumns"></include>
+		FROM area a
+		WHERE a.cityid=#{cityId}
+		ORDER BY a.cityid
+	</select>
+	
+	<select id="findByProvinceName" resultType="com.ambition.agile.modules.sys.entity.ThirdParty">
+		SELECT 
+			<include refid="thirdPartyColumns"></include>
+		FROM province a
+		WHERE a.name LIKE CONCAT(#{name}, '%')
+		ORDER BY a.code
+	</select>
+	
+	<select id="findByCityName" resultType="com.ambition.agile.modules.sys.entity.ThirdParty">
+		SELECT 
+			<include refid="thirdPartyColumns"></include>
+		FROM city a
+		WHERE a.name LIKE CONCAT(#{name}, '%') 
+		AND a.provinceid=#{provinceId}
+		ORDER BY a.code
+	</select>
+	
+	<select id="findByAreaName" resultType="com.ambition.agile.modules.sys.entity.ThirdParty">
+		SELECT 
+			<include refid="thirdPartyColumns"></include>
+		FROM area a
+		WHERE a.name LIKE CONCAT(#{name}, '%')
+		AND a.cityid=#{cityId} 
+		ORDER BY a.code
+	</select>
+	
+	<select id="getFullAddressByAreaCode" resultType="map">
+		SELECT a.name AS areaName,c.name AS cityName,p.name AS provinceName 
+		FROM area a,city c,province p 
+		WHERE a.cityid=c.code 
+		AND c.provinceid=p.code 
+		AND a.code=#{areaCode}
+	</select>
+
+</mapper>

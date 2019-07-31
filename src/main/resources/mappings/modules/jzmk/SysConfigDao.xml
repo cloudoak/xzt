@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ambition.agile.modules.jzmk.dao.SysConfigDao">
+    
+	<sql id="sysConfigColumns">
+		a.id AS "id",
+		a.school_name AS "schoolName",
+		a.system_title AS "systemTitle",
+		a.picture_size AS "pictureSize",
+		a.article AS "article",
+		a.check_article AS "checkArticle",
+		a.enable_integral AS "enableIntegral",
+		a.enable_anonymity_appraise AS "enableAnonymityAppraise",
+		a.enable_counsel_free AS "enableCounselFree",
+		a.enable_sms_remind AS "enableSmsRemind",
+		a.enable_counsel_voice AS "enableCounselVoice",
+		a.system_closed AS "systemClosed",
+		a.booking_days AS "bookingDays",
+		a.survey_total AS "surveyTotal",
+		a.system_prompt AS "systemPrompt",
+		a.time_mark AS "timeMark",
+		a.auth_key AS "authKey",
+		a.smtp_host AS "smtpHost",
+		a.smtp_user AS "smtpUser",
+		a.smtp_pwd AS "smtpPwd",
+		a.smtp_port AS "smtpPort",
+		a.mail_subject AS "mailSubject",
+		a.mail_content AS "mailContent",
+		a.logo AS "logo",
+		a.zycp_integral AS "zycpIntegral",
+		a.zhycp_integral AS "zhycpIntegral",
+		a.zxyy_integral AS "zxyyIntegral",
+		a.ktly_integral AS "ktlyIntegral",
+		a.zyzdxwpl_integral AS "zyzdxwplIntegral",
+		a.zgwj_integral AS "zgwjIntegral",
+		a.kjsc_integral AS "kjscIntegral",
+		a.zy_integral AS "zyIntegral",
+		a.tgzx_integral AS "tgzxIntegral",
+		a.jsdd_integral AS "jsddIntegral",
+		a.tgdd_integral AS "tgddIntegral",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.org_id AS "orgId",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="sysConfigJoins">
+	</sql>
+    
+	<select id="get" resultType="SysConfig">
+		SELECT 
+			<include refid="sysConfigColumns"/>
+		FROM sys_config a
+		<include refid="sysConfigJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findOne" resultType="SysConfig">
+		SELECT 
+			<include refid="sysConfigColumns"/>
+		FROM sys_config a
+			<include refid="sysConfigJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+		LIMIT 1
+	</select>
+	
+	<select id="findList" resultType="SysConfig">
+		SELECT 
+			<include refid="sysConfigColumns"/>
+		FROM sys_config a
+		<include refid="sysConfigJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			AND a.org_id = #{orgId}
+			<if test="schoolName != null and schoolName != ''">
+				AND a.school_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{schoolName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{schoolName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{schoolName},'%')</if>
+			</if>
+			<if test="systemTitle != null and systemTitle != ''">
+				AND a.system_title = #{systemTitle}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="SysConfig">
+		SELECT 
+			<include refid="sysConfigColumns"/>
+		FROM sys_config a
+		<include refid="sysConfigJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO sys_config(
+			school_name,
+			system_title,
+			picture_size,
+			article,
+			check_article,
+			enable_integral,
+			enable_anonymity_appraise,
+			enable_counsel_free,
+			enable_sms_remind,
+			enable_counsel_voice,
+			system_closed,
+			booking_days,
+			survey_total,
+			system_prompt,
+			time_mark,
+			auth_key,
+			smtp_host,
+			smtp_user,
+			smtp_pwd,
+			smtp_port,
+			mail_subject,
+			mail_content,
+			logo,
+			create_by,
+			create_date,
+			org_id,
+			del_flag
+		) VALUES (
+			#{schoolName},
+			#{systemTitle},
+			#{pictureSize},
+			#{article},
+			#{checkArticle},
+			#{enableIntegral},
+			#{enableAnonymityAppraise},
+			#{enableCounselFree},
+			#{enableSmsRemind},
+			#{enableCounselVoice},
+			#{systemClosed},
+			#{bookingDays},
+			#{surveyTotal},
+			#{systemPrompt},
+			#{timeMark},
+			#{authKey},
+			#{smtpHost},
+			#{smtpUser},
+			#{smtpPwd},
+			#{smtpPort},
+			#{mailSubject},
+			#{mailContent},
+			#{logo},
+			#{createBy.id},
+			#{createDate},
+			#{orgId},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE sys_config SET 	
+			school_name = #{schoolName},
+			system_title = #{systemTitle},
+			picture_size = #{pictureSize},
+			article = #{article},
+			check_article = #{checkArticle},
+			enable_integral = #{enableIntegral},
+			enable_anonymity_appraise = #{enableAnonymityAppraise},
+			enable_counsel_free = #{enableCounselFree},
+			enable_sms_remind = #{enableSmsRemind},
+			enable_counsel_voice = #{enableCounselVoice},
+			system_closed = #{systemClosed},
+			booking_days = #{bookingDays},
+			survey_total = #{surveyTotal},
+			system_prompt = #{systemPrompt},
+			time_mark = #{timeMark},
+			auth_key = #{authKey},
+			smtp_host = #{smtpHost},
+			smtp_user = #{smtpUser},
+			smtp_pwd = #{smtpPwd},
+			smtp_port = #{smtpPort},
+			mail_subject = #{mailSubject},
+			mail_content = #{mailContent},
+			logo = #{logo},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			del_flag = #{delFlag}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE sys_config SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

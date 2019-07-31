@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ambition.agile.modules.jzmk.dao.GeneExplainDao">
+    
+	<sql id="geneExplainColumns">
+		a.id AS "id",
+		a.min_value AS "minValue",
+		a.max_value AS "maxValue",
+		a.gene_explain AS "geneExplain",
+		a.gid AS "gid",
+		a.tid AS "tid",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.org_id AS "orgId",
+		a.del_flag AS "delFlag",
+		g.name as geneName
+	</sql>
+	
+	<sql id="geneExplainJoins">
+	</sql>
+    
+	<select id="get" resultType="GeneExplain">
+		SELECT 
+			<include refid="geneExplainColumns"/>
+		FROM gene_explain a
+		left join gene g on a.gid=g.id
+		<include refid="geneExplainJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getSections" resultType="Sections">
+		SELECT g.name AS "name", CONCAT(CONCAT(g.min_value, '-'), g.max_value) AS "groupSection", 
+		GROUP_CONCAT(DISTINCT(CONCAT(CONCAT(e.min_value, '-'), e.max_value)) ORDER BY e.min_value) AS "section"
+		FROM gene g LEFT JOIN gene_explain e ON g.id = e.gid 
+		WHERE g.del_flag = #{DEL_FLAG_NORMAL} AND e.tid = #{tid} 
+		AND e.gid = #{gid}
+	</select>
+	
+	<select id="getFactorValue" resultType="FactorValue">
+	SELECT IF(g.min_value > IFNULL(MAX(e.max_value), g.min_value), g.min_value, IFNULL(MAX(e.max_value),g.min_value)) AS "minValue", g.max_value  AS "maxValue"
+	FROM gene g 
+	LEFT JOIN gene_explain e ON g.id = e.gid
+	WHERE g.id = #{id}
+	GROUP BY g.id
+	</select>
+	
+	<select id="findList" resultType="GeneExplain">
+		SELECT 
+			<include refid="geneExplainColumns"/>
+		FROM gene_explain a
+		left join gene g on a.gid=g.id
+		<include refid="geneExplainJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="gid != null and gid != ''">
+				AND a.gid = #{gid}
+			</if>
+			<if test="tid != null and tid != ''">
+				AND a.tid = #{tid}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.max_value ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="GeneExplain">
+		SELECT 
+			<include refid="geneExplainColumns"/>
+		FROM gene_explain a 
+		left join gene g on a.gid=g.id
+		<include refid="geneExplainJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.max_value ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO gene_explain(
+			min_value,
+			max_value,
+			gene_explain,
+			gid,
+			tid,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			org_id,
+			del_flag
+		) VALUES (
+			#{minValue},
+			#{maxValue},
+			#{geneExplain},
+			#{gid},
+			#{tid},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{orgId},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE gene_explain SET 	
+			min_value = #{minValue},
+			max_value = #{maxValue},
+			gene_explain = #{geneExplain},
+			gid = #{gid},
+			tid = #{tid},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			org_id = #{orgId},
+			del_flag = #{delFlag}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE gene_explain SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

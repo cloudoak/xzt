@@ -1,0 +1,61 @@
+@charset "utf-8";
+/* CSS Document */
+.buttonkuuang_1{ position:absolute; bottom:1rem; width:30%; padding:0px; left:35%; z-index: 11;}
+
+.banner{ width:100%; float:left;}
+.banner img{ float:left;}
+
+.ClassroomUl_top{ float:left; height:1.65rem; line-height:1.65rem; padding:0 4%; font-size:0.65rem;} 
+
+.ClassroomUl{ float:left; width:100%;}
+.ClassroomUl li{ padding:0.6rem 4%; border-bottom:solid 1px #efefef; position:relative;background: #fff; }
+.ClassroomUl li p{ width:100%; float:left; line-height:1.3rem; color:#333;}
+.ClassroomUl li p.p1{ font-size:0.8rem;}
+.ClassroomUl li p.p2{ font-size:0.7rem;}
+.ClassroomUl li p.p3{ font-size:0.7rem; color:#666666; line-height:1rem; position:relative; top:0.05rem;}
+.ClassroomUl li p .ys1{ color:#999;}
+.ClassroomUl li p .ys2{ color:#f3892d;}
+
+.registerNav{ width:100%; height:2.2rem; border-bottom:solid 1px #efefef;}
+.registerNav li{ width:33.33%; float:left;height:2.2rem; text-align:center;}
+.registerNav li a{ display:inline-block;color:#333; line-height:2.1rem; padding:0 0.2rem; font-size:0.9rem;}
+.registerNav li a.on{ border-bottom:solid 3px #3bc8ac; color:#3bc8ac;}
+.registerList li{ border-bottom:solid 1px #efefef; line-height:2.2rem; font-size:0.7rem;}
+.registerList li .left{ width:26%; text-indent:1rem;height:2.2rem; overflow:hidden;}
+.registerList li .left1{ width:2.3rem; height:2.2rem; overflow:hidden; float:left;}
+.registerList li input{ float:left; background:none; border:0px; height:2.2rem; width:72%; padding-left:2%; font-size:0.7rem;}
+.registerList li input.text1{ width:30%;}
+.registerList li input.button{ width:30%; text-align:center; float:right; font-size:0.7rem; color:#f3892d;}
+.registerList li textarea{ float:left; background:none; border:0px; height:5rem; width:72%; padding-left:2%;font-size:0.7rem;line-height:1rem; padding-top:0.6rem;}
+.registerList li.jiantou{ background:url(../../images/ico3.png) no-repeat right;}
+.registerList li dl{float:left; background:none; border:0px; height:3.6rem; width:72%; padding-left:2%; font-size:0.7rem; line-height:2.2rem; position:relative;}
+.registerList li dl dd{ color:#999;}
+.registerList li dl .dd1{ font-size:0.6rem;top: -0.8rem; position:relative;}
+.file{ position:absolute; top:0px; left:0px; width:100%; height:100%;    opacity: 0.0;}
+
+.labelinput{ overflow:hidden;height:2rem; position:relative;}
+.labelinput input{ position: absolute; top:-100rem;-webkit-appearance:radio;}
+.labelinput i{display: inline-block;width:0.95rem; height:0.95rem; background: url(../../images/radio.png) no-repeat; vertical-align: middle; position:relative; top:-0.1rem;}
+.labelinput input:checked+i{ background: url(../../images/radio_check.png) no-repeat; }
+
+.pingluntiao{ width:92%; padding:0 4%; height:2.5rem; position:absolute; background:#fff; border-top:solid 1px #ededee; bottom:0px; z-index:11;}
+.pingluntiao .text{ height:1.3rem; margin-top:0.6rem; width:100%; border:solid 1px #cbcbd0;border-radius:1.3rem; text-indent:0.5rem; font-size:0.6rem; color:#999; line-height:1.2rem; float:left; background:#fafafa;}
+.pingluntiao .button{font-size: 0.6rem;  color: #fff; height: 1.2rem; background:url(../../images/ico18.png) no-repeat; border-radius:50%;text-align: center;line-height: 1.3rem; width:1.3rem; border:0px;  float:right;margin-top:0.605rem; position:absolute; right:4.5%; bottom:0.6rem; background-size:100% 100%;}
+
+.list{width:100%; border-bottom:solid 1px #efefef;}
+.list ul li{line-height:2.2rem; border-top:solid 1px #efefef;}
+.list ul li a{padding-left: 8%;color: #666; font-size:0.8rem; display: block;height:2.2rem;line-height: 2.2rem;position: relative;}
+.list ul li .inactive{ background:url(../../images/ico19.png) no-repeat 96%;}
+.list ul li .inactives{background:url(../../images/ico19on.png) no-repeat 96%;} 
+.list ul li .inactive em{ background:url(../../images/dui.png) no-repeat; width:0.65rem; height:0.5rem; display:none; float:left; margin-right:0.3rem; position:relative; top:0.85rem; margin-left:-0.95rem;}
+.list ul li .inactives em{ display:block;}
+.list ul li ul{display: none;}
+.list ul li ul li {line-height:2.2rem; border-top:solid 1px #efefef;}
+.list ul li ul li ul{display: none;}
+.list ul li ul li a{padding-left: 12%;}
+.list ul li ul li ul{border-top:solid 1px #efefef; padding:0.5rem 0;}
+.list ul li ul li ul li { border:0px; line-height:1.5rem; height:1.5rem;}
+.last{ background-color:#d6e6f1; border-color:#6196bb; }
+.list ul li ul li ul li a{  line-height:1.5rem;padding-left:16%;height:1.5rem;}
+
+.biaoti{ font-size:0.9rem; padding:0 4%; line-height:2.2rem; height:2.2rem;}

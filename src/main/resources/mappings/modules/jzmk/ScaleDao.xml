@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ambition.agile.modules.jzmk.dao.ScaleDao">
+    
+	<sql id="scaleColumns">
+		a.id AS "id",
+		a.is_lock AS "isLock",
+		a.inside AS "inside",
+		a.family AS "family",
+		a.name AS "name",
+		a.type_id AS "typeId",
+		a.introduce AS "introduce",
+		a.instruction AS "instruction",
+		a.teacher_must_option AS "teacherMustOption",
+		a.visitor_must_option AS "visitorMustOption",
+		a.parent_must_option AS "parentMustOption",
+		a.modeid AS "modeid",
+		a.rule_interpreter AS "ruleInterpreter",
+		a.parent_look AS "parentLook",
+		a.integral AS "integral",
+		a.min_show_time AS "minShowTime",
+		a.max_answer_time AS "maxAnswerTime",
+		a.min_age_limit AS "minAgeLimit",
+		a.max_age_limit AS "maxAgeLimit",
+		a.is_public AS "isPublic",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.org_id AS "orgId",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="scaleJoins">
+		
+	</sql>
+    
+	<select id="get" resultType="Scale">
+		SELECT 
+			<include refid="scaleColumns"/>
+		FROM scale a
+		<include refid="scaleJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Scale">
+		SELECT 
+			<include refid="scaleColumns"/>
+		FROM scale a
+		<include refid="scaleJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="typeId != null and typeId != ''">
+				AND a.type_id=${typeId}
+			</if>
+			<if test="isLock != null and isLock != ''">
+				AND a.is_lock<![CDATA[<]]>#{isLock}
+			</if>
+			<choose>
+			<when test="orgId != null and orgId != ''">
+				AND (a.org_id=${orgId}
+				OR a.id IN (SELECT sid FROM org_scale WHERE org_id=${orgId} AND del_flag = #{DEL_FLAG_NORMAL})
+				<if test="isPublic != null">
+					 OR a.is_public=${isPublic}
+				</if>)
+			</when>
+			<otherwise>
+			<if test="isPublic != null and isPublic != ''">
+				AND a.is_public=${isPublic}
+			</if>
+			</otherwise>
+			</choose>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAll" resultType="Scale">
+		SELECT 
+			<include refid="scaleColumns"/>
+		FROM scale a
+		<include refid="scaleJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL} 
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="typeId != null and typeId != ''">
+				AND a.type_id=${typeId}
+			</if>
+			<if test="isLock != null and isLock != ''">
+				AND a.is_lock=${isLock}
+			</if>
+			<if test="orgId != null and orgId != ''">
+				AND a.org_id=${orgId} 
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findUseScale" resultType="Scale">
+		SELECT 
+			<include refid="scaleColumns"/>
+		FROM scale a
+		<include refid="scaleJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="isLock != null and isLock != ''">
+				AND a.is_lock!=${isLock}
+			</if>
+			<choose>
+			<when test="orgId != null and orgId != ''">
+				AND (a.org_id=${orgId}
+				<if test="isPublic != null and isPublic == 0">
+					 OR a.is_public=${isPublic}
+				</if>)
+			</when>
+			<otherwise>
+			<if test="isPublic != null and isPublic != ''">
+				AND a.is_public=${isPublic}
+			</if>
+			</otherwise>
+		</choose>
+		<if test="inside != null and inside != ''">
+			AND a.inside=${inside}
+		</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Scale">
+		SELECT 
+			<include refid="scaleColumns"/>
+		FROM scale a
+		<include refid="scaleJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		<if test="inside != null and inside != ''">
+			AND a.inside=${inside}
+		</if>
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert" keyProperty="id" useGeneratedKeys="true">
+		INSERT INTO scale(
+			family,
+			is_lock,
+			inside,
+			name,
+			type_id,
+			introduce,
+			instruction,
+			teacher_must_option,
+			visitor_must_option,
+			parent_must_option,
+			modeid,
+			rule_interpreter,
+			parent_look,
+			integral,
+			min_show_time,
+			max_answer_time,
+			min_age_limit,
+			max_age_limit,
+			is_public,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			org_id,
+			del_flag
+		) VALUES (
+			#{family},
+			#{isLock},
+			#{inside},
+			#{name},
+			#{typeId},
+			#{introduce},
+			#{instruction},
+			#{teacherMustOption},
+			#{visitorMustOption},
+			#{parentMustOption},
+			#{modeid},
+			#{ruleInterpreter},
+			#{parentLook},
+			#{integral},
+			#{minShowTime},
+			#{maxAnswerTime},
+			#{minAgeLimit},
+			#{maxAgeLimit},
+			#{isPublic},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{orgId},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE scale SET 	
+			is_lock = #{isLock},
+			inside = #{inside},
+			name = #{name},
+			type_id = #{typeId},
+			introduce = #{introduce},
+			instruction = #{instruction},
+			teacher_must_option = #{teacherMustOption},
+			visitor_must_option = #{visitorMustOption},
+			parent_must_option = #{parentMustOption},
+			modeid = #{modeid},
+			rule_interpreter = #{ruleInterpreter},
+			parent_look = #{parentLook},
+			integral = #{integral},
+			min_show_time = #{minShowTime},
+			max_answer_time = #{maxAnswerTime},
+			min_age_limit = #{minAgeLimit},
+			max_age_limit = #{maxAgeLimit},
+			is_public = #{isPublic},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			org_id = #{orgId},
+			del_flag = #{delFlag}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateLock">
+		UPDATE scale SET 
+			is_lock = #{isLock}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE scale SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

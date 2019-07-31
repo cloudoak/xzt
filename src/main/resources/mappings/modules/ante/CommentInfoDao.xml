@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ambition.agile.modules.ante.dao.CommentInfoDao">
+    
+	<sql id="commentInfoColumns">
+		a.id AS "id",
+		a.title AS "title",
+		a.content AS "content",
+		a.range_type AS "rangeType",
+		a.user_id1 AS "userId1",
+		a.user_name1 AS "userName1",
+		a.user_type1 AS "userType1",
+		a.user_id2 AS "userId2",
+		a.user_name2 AS "userName2",
+		a.user_type2 AS "userType2",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.comment_type AS "commentType",
+		a.power_type AS "powerType",
+		a.del_flag AS "delFlag",
+		a.org_id AS "orgId"
+	</sql>
+	
+	<sql id="commentInfoJoins">
+	
+	</sql>
+    
+	<select id="get" resultType="CommentInfo">
+		SELECT 
+			<include refid="commentInfoColumns"/>
+		FROM comment_info a
+		<include refid="commentInfoJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CommentInfo">
+		SELECT 
+			<include refid="commentInfoColumns"/>
+		FROM comment_info a
+		<include refid="commentInfoJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="title != null and title != ''">
+				AND a.title LIKE 
+					<if test="dbName == 'oracle'">'%'||#{title}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{title}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{title},'%')</if>
+			</if>
+			<if test="commentType != null and commentType != ''">
+				AND a.comment_type = #{commentType}
+			</if>
+			<if test="userId1 != null and userId1 != ''">
+				AND a.user_id1 = #{userId1}
+			</if>
+			<if test="userName1 != null and userName1 != ''">
+				AND a.user_name1 LIKE 
+					<if test="dbName == 'oracle'">'%'||#{userName1}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{userName1}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{userName1},'%')</if>
+			</if>
+			<if test="userId2 != null and userId2 != ''">
+				AND a.user_id2 = #{userId2}
+			</if>
+			<if test="userName2 != null and userName2 != ''">
+				AND a.user_name2 LIKE 
+					<if test="dbName == 'oracle'">'%'||#{userName2}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{userName2}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{userName2},'%')</if>
+			</if>
+			<if test="orgId != null and orgId != ''">
+				AND a.org_id = #{orgId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CommentInfo">
+		SELECT 
+			<include refid="commentInfoColumns"/>
+		FROM comment_info a
+		<include refid="commentInfoJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO comment_info(
+			id,
+			title,
+			content,
+			range_type,
+			user_id1,
+			user_name1,
+			user_type1,
+			user_id2,
+			user_name2,
+			user_type2,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			comment_type,
+		 	power_type,
+			del_flag,
+			org_id
+		) VALUES (
+			#{id},
+			#{title},
+			#{content},
+			#{rangeType},
+			#{userId1},
+			#{userName1},
+			#{userType1},
+			#{userId2},
+			#{userName2},
+			#{userType2},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{commentType},
+			#{powerType},
+			#{delFlag},
+			#{orgId}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE comment_info SET 	
+			title = #{title},
+			content = #{content},
+			range_type = #{rangeType},
+			user_id1 = #{userId1},
+			user_name1 = #{userName1},
+			user_id2 = #{userId2},
+			user_name2 = #{userName2},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			comment_type = #{commentType},
+			power_type = #{powerType},
+			org_id = #{orgId}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE comment_info SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

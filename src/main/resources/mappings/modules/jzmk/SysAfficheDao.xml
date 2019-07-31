@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ambition.agile.modules.jzmk.dao.SysAfficheDao">
+    
+	<sql id="sysAfficheColumns">
+		a.id AS "id",
+		a.affiche_title AS "afficheTitle",
+		a.affiche_content AS "afficheContent",
+		a.head_image AS "headImage",
+		a.first_display AS "firstDisplay",
+		a.read_count AS "readCount",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.org_id AS "orgId",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="sysAfficheJoins">
+	</sql>
+    
+	<select id="get" resultType="SysAffiche">
+		SELECT 
+			<include refid="sysAfficheColumns"/>
+		FROM sys_affiche a
+		<include refid="sysAfficheJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="SysAffiche">
+		SELECT 
+			<include refid="sysAfficheColumns"/>
+		FROM sys_affiche a
+		<include refid="sysAfficheJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="afficheTitle != null and afficheTitle != ''">
+				AND a.affiche_title LIKE 
+					<if test="dbName == 'oracle'">'%'||#{afficheTitle}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{afficheTitle}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{afficheTitle},'%')</if>
+			</if>
+			<if test="afficheContent != null and afficheContent != ''">
+				AND a.affiche_content = #{afficheContent}
+			</if>
+			<if test="createBy != null and createBy.id != null and createBy.id != ''">
+				AND a.create_by = #{createBy.id}
+			</if>
+			<if test="createDate != null and createDate != ''">
+				AND a.create_date LIKE 
+					<if test="dbName == 'oracle'">'%'||#{createDate}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{createDate}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{createDate},'%')</if>
+			</if>
+			<if test="firstDisplay != null and firstDisplay != ''">
+				AND a.first_display = #{firstDisplay} 
+			</if>
+			<if test="orgId != null and orgId != ''">
+				AND a.org_id = #{orgId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="SysAffiche">
+		SELECT 
+			<include refid="sysAfficheColumns"/>
+		FROM sys_affiche a
+		<include refid="sysAfficheJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<!-- <if test="orgId != null and orgId != ''">
+				AND a.org_id = #{orgId}
+			</if> -->
+			AND a.org_id = #{orgId}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findTop3List" resultType="SysAffiche">
+		SELECT 
+			<include refid="sysAfficheColumns"/>
+		FROM sys_affiche a
+		<include refid="sysAfficheJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL} 
+			<if test="orgId != null and orgId != ''">
+				AND a.org_id = #{orgId}
+			</if>
+			<if test="firstDisplay != null and firstDisplay != ''">
+				AND a.first_display = #{firstDisplay} 
+			</if>
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+		LIMIT 3
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO sys_affiche(
+			affiche_title,
+			affiche_content,
+			head_image,
+			first_display,
+			create_by,
+			create_date,
+			org_id,
+			del_flag
+		) VALUES (
+			#{afficheTitle},
+			#{afficheContent},
+			#{headImage},
+			#{firstDisplay},
+			#{createBy.id},
+			#{createDate},
+			#{orgId},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE sys_affiche SET 	
+			affiche_title = #{afficheTitle},
+			affiche_content = #{afficheContent},
+			head_image = #{headImage},
+			first_display = #{firstDisplay},
+			read_count = #{readCount},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			del_flag = #{delFlag}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE sys_affiche SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ambition.agile.modules.archive.dao.ArchivesDao">
+    
+	<sql id="archivesColumns">
+		u.id AS "userId", 
+		u.office_id AS "org.id", 
+		c.name AS "org.name",
+		u.login_name AS "userName",
+		u.name AS "name",
+		cpv.sex AS "sex", 
+		cpv.age AS "age",
+		u.user_type AS "authType",
+		u.login_date AS "loginDate"
+	</sql>
+	
+	<sql id="archivesJoins">
+		LEFT JOIN sys_office c ON c.id = u.office_id
+		LEFT JOIN (SELECT sex, age, user_id FROM counselor UNION
+		SELECT gender AS "sex", age, user_id FROM parents UNION
+		SELECT sex, age, user_id FROM visitor_info ) cpv 
+		ON (u.id = cpv.user_id)
+	</sql>
+    
+	<select id="get" resultType="Archives">
+		SELECT 
+			<include refid="archivesColumns"/>
+		FROM sys_user u
+			<include refid="archivesJoins"/>
+		WHERE u.id = #{userId} 
+	</select>
+	
+	<select id="findList" resultType="Archives">
+		SELECT 
+			<include refid="archivesColumns"/>
+		FROM sys_user u
+			<include refid="archivesJoins"/>
+		<where>
+			u.del_flag = #{DEL_FLAG_NORMAL}
+			AND u.user_type > 1 
+			<if test="userName != null and userName != ''">
+				AND u.login_name LIKE 
+				<if test="dbName == 'oracle'">'%'||#{userName}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{userName}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{userName},'%')</if>
+			</if>
+			<if test="sex != null and sex != ''">
+				AND cpv.sex = #{sex}
+			</if>
+			<if test="age != null and age != ''">
+				AND cpv.age = #{age}
+			</if>
+			<if test="name != null and name != ''">
+				AND u.name = #{name}
+			</if>
+			<if test="authType != null and authType != ''">
+				AND u.user_type = #{authType}
+			</if>
+			<if test="org !=null  and org.id != null and org.id != ''">
+				AND u.office_id = #{org.id}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Archives">
+		SELECT 
+			<include refid="archivesColumns"/>
+		FROM sys_user u
+			<include refid="archivesJoins"/>
+		<where>
+		u.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+</mapper>

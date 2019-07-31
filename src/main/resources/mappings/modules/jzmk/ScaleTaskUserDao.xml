@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ambition.agile.modules.jzmk.dao.ScaleTaskUserDao">
+    
+	<sql id="scaleTaskUserColumns">
+		a.id AS "id",
+		a.user_id AS "userId",
+		a.role AS "role",
+		a.task_id AS "taskId",
+		a.task_number AS "taskNumber",
+		a.tid AS "tid",
+		a.start_time AS "startTime",
+		a.end_time AS "endTime",
+		a.state AS "state",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.org_id AS "orgId",
+		a.del_flag AS "delFlag",
+		a.user_login_name AS "userLoginName",
+		a.user_name AS "userName",
+		a.user_sex AS "userSex",
+		a.user_Age AS "userAge",
+		s.name AS "scaleName",
+		b.start_time AS "startDate",
+		b.end_time AS "endDate",
+		s.integral AS "integral" 
+	</sql>
+	
+	<sql id="dcScales">
+		a.id AS "id",
+		a.user_id AS "userId",
+		a.role AS "role",
+		a.task_id AS "taskId",
+		a.task_number AS "taskNumber",
+		a.tid AS "tid",
+		a.start_time AS "startTime",
+		a.end_time AS "endTime",
+		a.state AS "state",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.org_id AS "orgId",
+		a.del_flag AS "delFlag",
+		a.user_login_name AS "userLoginName",
+		a.user_name AS "userName",
+		a.user_sex AS "userSex",
+		a.user_Age AS "userAge",
+		s.name AS "scaleName",
+		b.start_time AS "startDate",
+		b.end_time AS "endDate",
+		s.integral AS "integral"
+	</sql>
+	
+	<select id="selectDcScalesByUser" resultType="ScaleTaskUser">
+		select 　
+			<include refid="dcScales"/>
+		from scale_task_user a
+		left join scale_check_task b on a.task_id=b.id
+		left join scale s on s.id=a.tid
+		where a.del_flag=0
+		<if test="role != null and role != ''">
+			AND a.role = #{role}
+		</if>
+		<if test="userId != null and userId != ''">
+			AND a.user_id = #{userId}
+		</if>
+		<if test="orgId != null and orgId != ''">
+			AND a.org_id = #{orgId}
+		</if>
+		<if test="organization !=null  and organization != ''">
+			AND a.org_id IN(${organization}) 
+		</if>
+		order by b.start_time DESC
+	</select>
+	
+	<select id="selectDcScalesCheckingByUser" resultType="ScaleTaskUser">
+		select 
+		<include refid="dcScales"/>
+		from scale_task_user a
+		left join scale_check_task b on a.task_id=b.id
+		left join scale s on s.id=a.tid
+		where a.del_flag=0 AND a.end_time &gt;= now() AND a.state = 0 
+		<if test="role != null and role != ''">
+		    AND a.role = #{role}
+		</if>
+		<if test="userId != null and userId != ''">
+			AND a.user_id = #{userId}
+		</if>
+		<if test="orgId != null and orgId != ''">
+			AND a.org_id = #{orgId}
+		</if>
+		<if test="organization !=null  and organization != ''">
+			AND a.org_id IN(${organization})
+		</if>
+		order by b.start_time DESC
+	</select>
+	
+	<select id="selectCcScalesCheckingByUser" resultType="ScaleTaskUser">
+		select 
+		<include refid="dcScales"/>
+		from scale_task_user a
+		left join scale_check_task b on a.task_id=b.id
+		left join scale s on s.id=a.tid 
+		where a.del_flag=0 AND a.state = 4 
+		<if test="role != null and role != ''">
+		    AND a.role = #{role}
+		</if>
+		<if test="userId != null and userId != ''">
+			AND a.user_id = #{userId}
+		</if>
+		<if test="orgId != null and orgId != ''">
+			AND a.org_id = #{orgId}
+		</if>
+		<if test="organization !=null  and organization != ''">
+			AND a.org_id IN(${organization})
+		</if>
+		order by b.start_time DESC
+	</select>
+	
+	<select id="selectLcScalesByUser" resultType="ScaleTaskUser">
+		select 
+		<include refid="dcScales"/>
+		from scale_task_user a
+		left join scale_check_task b on a.task_id=b.id
+		left join scale s on s.id=a.tid
+		where a.del_flag=0 AND a.end_time &lt; now() AND a.state=0 
+		<if test="role != null and role != ''">
+		    AND a.role = #{role}
+		</if>
+		<if test="userId != null and userId != ''">
+			AND a.user_id = #{userId}
+		</if>
+		<if test="orgId != null and orgId != ''">
+			AND a.org_id = #{orgId}
+		</if>
+		<if test="organization !=null  and organization != ''">
+			AND a.org_id IN(${organization})
+		</if>
+		order by b.start_time DESC
+	</select>
+	
+	<sql id="scaleTaskUserJoins">
+		LEFT JOIN sys_user u2 ON u2.id = a.user_id 
+	</sql>
+    
+	<select id="get" resultType="ScaleTaskUser">
+		SELECT 
+			<include refid="scaleTaskUserColumns"/>
+		FROM scale_task_user a
+		left join scale_check_task b on a.task_id=b.id
+		left join scale s on s.id=a.tid
+		<include refid="scaleTaskUserJoins"/>
+		 WHERE a.id = #{id} 
+	</select>
+	
+	<select id="getForTask" resultType="ScaleTaskUser">
+		SELECT 
+			<include refid="scaleTaskUserColumns"/>
+		FROM scale_task_user a 
+		left join scale_check_task b on a.task_id=b.id
+		left join scale s on s.id=a.tid 
+		WHERE a.del_flag = 0 
+		<if test="userId != null and userId != ''">
+			AND a.user_id = #{userId}
+		</if>
+		<if test="tid != null and tid != ''">
+			AND a.tid = #{tid} 
+		</if>
+		<if test="taskId != null and taskId != ''">
+			AND a.task_id = #{taskId} 
+		</if>
+	</select>
+	
+	<select id="findList" resultType="ScaleTaskUser">
+		SELECT 
+			<include refid="scaleTaskUserColumns"/>
+		FROM scale_task_user a
+		left join scale_check_task b on a.task_id=b.id
+		left join scale s on s.id=a.tid
+		<include refid="scaleTaskUserJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="userId != null and userId != ''">
+				AND a.user_id = #{userId}
+			</if>
+			<if test="role != null and role != ''">
+				AND a.role = #{role}
+			</if>
+			<if test="tid != null and tid != ''">
+				AND a.tid = #{tid}
+			</if>
+			<if test="state != null">
+				AND a.state = #{state}
+			</if>
+			<if test="isState != null and isState != ''">
+				AND a.state = 0 and b.state=2
+			</if>
+			<if test="taskId != null and taskId != ''">
+				AND a.task_id = #{taskId}
+			</if>
+			<if test="tid != null and tid != ''">
+				AND a.tid = #{tid}
+			</if>
+			<if test="userLoginName != null and userLoginName != ''">
+				AND a.user_login_name = #{userLoginName}
+			</if>
+			<if test="userType != null">
+			    AND u2.user_type = #{userType} 
+		    </if>
+		    <if test="userSex != null">
+			    AND a.user_sex = #{userSex} 
+		    </if>
+		    <if test="beginAge != null">
+			    AND a.user_age &gt;= #{beginAge} 
+		    </if>
+		    <if test="endAge != null">
+			    AND a.user_age &lt;= #{endAge} 
+		    </if>
+		    <if test="startTime != null and startTime != ''">
+				AND UNIX_TIMESTAMP(a.start_time) &gt;= UNIX_TIMESTAMP(#{startTime}) 
+			</if>
+			<if test="endTime != null and endTime != ''">
+				AND UNIX_TIMESTAMP(a.end_time) &lt; (UNIX_TIMESTAMP(#{endTime})+24*3600)  
+			</if>
+			<if test="orgId != null and orgId != ''">
+				AND a.org_id = #{orgId}
+			</if>
+			<if test="organization !=null  and organization != ''">
+				AND a.org_id IN(${organization})
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="getStatisticResult" resultType="ScaleTaskUser">
+		SELECT count(distinct su.task_number) AS "checkTotalCount",
+		     count(distinct case su.state when 2 then su.task_number end) AS "checkFinishedCount",
+			 count(distinct case su.state when 0 then su.task_number end) AS "checkUnfinishedCount",
+			 count(distinct case sc.abnormal when 1 then sc.task_number end) AS "checkAbnormalCount",
+			 count(distinct su.task_number) - count(distinct case su.state when 2 then su.task_number end) AS "checkInvalidCount" 
+		FROM scale_task_user su left join scale_check_score sc 
+		ON su.task_number = sc.task_number 
+    	WHERE su.del_flag = #{DEL_FLAG_NORMAL} 
+		<if test="tid != null and tid != ''">
+			AND su.tid = #{tid}
+		</if>
+		<if test="startTime != null and startTime != ''">
+			AND UNIX_TIMESTAMP(su.start_time) &gt;= UNIX_TIMESTAMP(#{startTime}) 
+		</if>
+		<if test="endTime != null and endTime != ''">
+			AND UNIX_TIMESTAMP(su.end_time) &lt; (UNIX_TIMESTAMP(#{endTime})+24*3600)
+		</if>
+		<if test="orgId != null and orgId != ''">
+			AND su.org_id = #{orgId} 
+		</if>
+	</select>
+	
+	<select id="findAllList" resultType="ScaleTaskUser">
+		SELECT 
+			<include refid="scaleTaskUserColumns"/>
+		FROM scale_task_user a
+		left join scale_check_task b on a.task_id=b.id
+		left join scale s on s.id=a.tid
+		<include refid="scaleTaskUserJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="orgId != null and orgId != ''">
+				AND a.org_id = #{orgId}
+			</if>
+			<if test="organization !=null  and organization != ''">
+				AND a.org_id IN(${organization})
+			</if>
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO scale_task_user(
+			user_id,
+			role,
+			task_id,
+			task_number,
+			tid,
+			start_time,
+			end_time,
+			state,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			org_id,
+			del_flag,
+			user_login_name,
+		    user_name,
+		    user_sex,
+		    user_Age
+		) VALUES (
+			#{userId},
+			#{role},
+			#{taskId},
+			#{taskNumber},
+			#{tid},
+			#{startTime},
+			#{endTime},
+			#{state},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{orgId},
+			#{delFlag},
+			#{userLoginName},
+			#{userName},
+			#{userSex},
+			#{userAge}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE scale_task_user 
+		<set>
+			<if test="userId != null">user_id = #{userId},</if>
+			<if test="role != null">role = #{role},</if>
+			<if test="tid != null">tid = #{tid},</if>
+			<if test="taskNumber != null">task_number = #{taskNumber},</if>
+			<if test="startTime != null">start_time = #{startTime},</if>
+			<if test="endTime != null">end_time = #{endTime},</if>
+			<if test="state != null">state = #{state},</if>
+			<if test="updateDate != null">update_date = #{updateDate},</if>
+			<if test="orgId != null">org_id = #{orgId},</if>
+			<if test="delFlag != null">del_flag = #{delFlag}</if> 
+		</set>
+		<where>
+			del_flag = #{DEL_FLAG_NORMAL}
+			<if test="id != null and id != ''">
+				AND id = #{id}
+			</if>
+			<if test="userId != null and userId != ''">
+				AND user_id = #{userId}
+			</if>
+			<if test="tid != null and tid != ''">
+				AND tid = #{tid} 
+			</if>
+			<if test="taskId != null and taskId != ''">
+				AND task_id = #{taskId} 
+			</if>
+			<if test="taskNumber != null and taskNumber != ''">
+				AND task_number = #{taskNumber} 
+			</if>
+			<if test="orgId != null and orgId != ''">
+				AND org_id = #{orgId}
+			</if>
+			<if test="organization !=null  and organization != ''">
+				AND org_id IN(${organization})
+			</if>
+		</where>
+	</update>
+	
+	<update id="updateForTask">
+		UPDATE scale_task_user 
+		<set>
+			<if test="userId != null">user_id = #{userId},</if>
+			<if test="role != null">role = #{role},</if>
+			<if test="tid != null">tid = #{tid},</if>
+			<if test="taskNumber != null">task_number = #{taskNumber},</if>
+			<if test="startTime != null">start_time = #{startTime},</if>
+			<if test="endTime != null">end_time = #{endTime},</if>
+			<if test="state != null">state = #{state},</if>
+			<if test="updateDate != null">update_date = #{updateDate},</if>
+			<if test="orgId != null">org_id = #{orgId},</if>
+			<if test="delFlag != null">del_flag = #{delFlag}</if> 
+		</set>
+		<where>
+			del_flag = #{DEL_FLAG_NORMAL} 
+			<if test="id != null and id != ''">
+				AND id = #{id}
+			</if>
+			<if test="userId != null and userId != ''">
+				AND user_id = #{userId}
+			</if>
+			<if test="tid != null and tid != ''">
+				AND tid = #{tid} 
+			</if>
+			<if test="taskId != null and taskId != ''">
+				AND task_id = #{taskId} 
+			</if>
+		</where>
+	</update>
+	
+	<update id="delete">
+		UPDATE scale_task_user SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

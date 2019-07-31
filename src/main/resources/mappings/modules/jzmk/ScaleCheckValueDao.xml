@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ambition.agile.modules.jzmk.dao.ScaleCheckValueDao">
+    
+	<sql id="scaleCheckValueColumns">
+		a.vid AS "vid",
+		a.start_value AS "startValue",
+		a.end_value AS "endValue",
+		a.explain AS "explain",
+		a.gid AS "gid",
+		a.tid AS "tid"
+	</sql>
+	
+	<sql id="scaleCheckValueJoins">
+	</sql>
+    
+	<select id="get" resultType="ScaleCheckValue">
+		SELECT 
+			<include refid="scaleCheckValueColumns"/>
+		FROM scale_check_value a
+		<include refid="scaleCheckValueJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ScaleCheckValue">
+		SELECT 
+			<include refid="scaleCheckValueColumns"/>
+		FROM scale_check_value a
+		<include refid="scaleCheckValueJoins"/>
+		<where>
+			
+			<if test="startValue != null and startValue != ''">
+				AND a.start_value = #{startValue}
+			</if>
+			<if test="endValue != null and endValue != ''">
+				AND a.end_value = #{endValue}
+			</if>
+			<if test="explain != null and explain != ''">
+				AND a.explain = #{explain}
+			</if>
+			<if test="gid != null and gid != ''">
+				AND a.gid = #{gid}
+			</if>
+			<if test="tid != null and tid != ''">
+				AND a.tid = #{tid}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ScaleCheckValue">
+		SELECT 
+			<include refid="scaleCheckValueColumns"/>
+		FROM scale_check_value a
+		<include refid="scaleCheckValueJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO scale_check_value(
+			vid,
+			start_value,
+			end_value,
+			explain,
+			gid,
+			tid
+		) VALUES (
+			#{vid},
+			#{startValue},
+			#{endValue},
+			#{explain},
+			#{gid},
+			#{tid}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE scale_check_value SET 	
+			vid = #{vid},
+			start_value = #{startValue},
+			end_value = #{endValue},
+			explain = #{explain},
+			gid = #{gid},
+			tid = #{tid}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM scale_check_value
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

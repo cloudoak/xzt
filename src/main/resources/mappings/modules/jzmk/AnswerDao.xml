@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ambition.agile.modules.jzmk.dao.AnswerDao">
+    
+	<sql id="answerColumns">
+		a.id AS "id",
+		a.answer_no AS "answerNo",
+		a.answer_content AS "answerContent",
+		a.score AS "score",
+		a.parse_content AS "parseContent",
+		a.question_id AS "questionId"
+	</sql>
+	
+	<sql id="answerJoins">
+	</sql>
+    
+	<select id="get" resultType="Answer">
+		SELECT 
+			<include refid="answerColumns"/>
+		FROM answer a
+		<include refid="answerJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findTotalScores" resultType="java.math.BigDecimal">
+	SELECT SUM(score) AS "score" FROM answer WHERE question_id IN(${question_ids});
+	</select>
+	
+	<select id="findList" resultType="Answer">
+		SELECT 
+			<include refid="answerColumns"/>
+		FROM answer a
+		<include refid="answerJoins"/>
+		<where>
+			
+			<if test="questionId != null and questionId != ''">
+				AND a.question_id = #{questionId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.answer_no
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findLastAllAnswers" resultType="Answer">
+		SELECT 
+			<include refid="answerColumns"/>
+		FROM answer a
+			<include refid="answerJoins"/>
+		<where>
+			<if test="questionId != null and questionId != ''">
+				AND a.question_id = #{questionId}
+			</if>
+			<if test="answerNo != null and answerNo != ''">
+				AND a.answer_no <![CDATA[  >  ]]> #{answerNo}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.answer_no ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findMaxAnswerNo" resultType="java.lang.Integer">
+		SELECT IFNULL(MAX(answer_no),-1) AS "answerNo"
+		FROM answer
+		WHERE question_id = #{questionId }
+	</select>
+	<!-- IN(<![CDATA[${qids }]]>)  -->
+	<select id="findAllList" resultType="Answer">
+		SELECT 
+			<include refid="answerColumns"/>
+		FROM answer a
+		<include refid="answerJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findByQuestionIds" resultType="Answer">
+		SELECT 
+			<include refid="answerColumns"/>
+		FROM answer a
+		<include refid="answerJoins"/>
+		<where>
+			a.question_id IN (
+			<foreach collection="array" item="questionId" index="index" separator=",">
+				#{questionId}
+			</foreach>
+			)
+		</where>
+	</select>
+	
+	<select id="findByDistinctQuestionCount" resultType="java.lang.Integer">
+		SELECT DISTINCT IFNULL(COUNT(question_id),0) AS "question_id" FROM answer
+		WHERE question_id IN  
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">  
+		 #{item}  
+		</foreach>  
+		GROUP BY answer_content, answer_no
+	</select>
+	
+	<insert id="insert" keyProperty="id" useGeneratedKeys="true">
+		INSERT INTO answer(
+			answer_no,
+			answer_content,
+			score,
+			parse_content,
+			question_id
+		) VALUES (
+			#{answerNo},
+			#{answerContent},
+			#{score},
+			#{parseContent},
+			#{questionId}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE answer SET 	
+			answer_no = #{answerNo},
+			answer_content = #{answerContent},
+			score = #{score},
+			parse_content = #{parseContent},
+			question_id = #{questionId}
+		WHERE id = #{id}
+	</update>
+	
+	<delete id="delete">
+		DELETE FROM answer 
+		WHERE id = #{id}
+	</delete>
+	
+	<delete id="deleteByQuestionIdsAndAnswerNo">
+		DELETE FROM answer
+		<where>
+			question_id IN (
+			<foreach collection="array" item="questionId" index="index" separator=",">
+				#{questionId}
+			</foreach>
+			) 
+			AND answer_no = #{answerNo}
+		</where>
+	</delete>
+	
+	<delete id="deleteByQuestionIds">
+		DELETE FROM answer 
+		WHERE question_id IN(${questionId})
+	</delete>
+	
+	<delete id="deleteAnswerByQuestionId">
+		DELETE FROM answer 
+		WHERE question_id = #{questionId}
+	</delete>
+</mapper>

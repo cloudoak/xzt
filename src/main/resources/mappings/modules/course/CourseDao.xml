@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ambition.agile.modules.course.dao.CourseDao">
+    
+	<sql id="courseColumns">
+		a.id AS "id",
+		a.name AS "name",
+		a.course_catalog_id AS "courseCatalogId",
+		a.course_catalog_name AS "courseCatalogName",
+		a.is_public AS "isPublic",
+		a.singer as "singer",
+		a.path AS "path",
+		a.intro AS "intro",
+		a.create_by AS "createBy.id",
+		a.update_date AS "updateDate",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.del_flag AS "delFlag",
+		a.org_id AS "orgId"
+	</sql>
+	
+	<sql id="courseJoins">
+	</sql>
+    
+	<select id="get" resultType="Course">
+		SELECT 
+			<include refid="courseColumns"/>
+		FROM course a
+		<include refid="courseJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Course">
+		SELECT 
+			<include refid="courseColumns"/>
+		FROM course a
+		<include refid="courseJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="isPublic != null and isPublic != ''">
+				AND a.is_public = #{isPublic}
+			</if>
+			<if test="owner != null and owner == 1">
+				AND (a.is_public = 1 OR a.id IN 
+				(SELECT course_id FROM course_permissions WHERE org_id IN (${orgId})))
+			</if>
+			<if test="courseCatalogParentids != null and courseCatalogParentids != ''">
+				AND ( a.course_catalog_parentids LIKE 
+					<if test="dbName == 'oracle'">'%'||#{courseCatalogParentids}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{courseCatalogParentids}+'%'</if>
+					<if test="dbName == 'mysql'">CONCAT('%', #{courseCatalogParentids}, '%')</if>)
+			</if>
+			<if test="courseCatalogId != null and courseCatalogId != ''">
+				AND  a.course_catalog_id = #{courseCatalogId} 
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Course">
+		SELECT 
+			<include refid="courseColumns"/>
+		FROM course a
+		<include refid="courseJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO course(
+			name,
+			course_catalog_id,
+			course_catalog_name,
+			course_catalog_parentids,
+			is_public,
+			singer,
+			path,
+			intro,
+			create_by,
+			create_date,
+			del_flag
+		) VALUES (
+			#{name},
+			#{courseCatalogId},
+			#{courseCatalogName},
+			#{courseCatalogParentids},
+			#{isPublic},
+			#{singer},
+			#{path},
+			#{intro},
+			#{createBy.id},
+			#{createDate},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE course SET 	
+			name = #{name},
+			course_catalog_id = #{courseCatalogId},
+			course_catalog_name = #{courseCatalogName},
+			is_public = #{isPublic},
+			singer = #{singer},
+			path = #{path},
+			intro = #{intro},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE course SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

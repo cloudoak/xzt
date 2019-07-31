@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ambition.agile.modules.sys.dao.OfficeDao">
+
+	<sql id="officeColumns">
+		a.id,
+		a.parent_id AS "parent.id",
+		a.parent_id AS "parentId",
+		a.parent_ids,
+		a.area_id AS "area.id",
+		a.name,
+		a.sort,
+		a.type,
+		a.address, 
+		a.zip_code, 
+		a.master, 
+		a.phone, 
+		a.qq, 
+		a.email,
+		a.logo,
+		a.title,
+		a.create_by AS "createBy.id",
+		a.create_date,
+		a.update_by AS "updateBy.id",
+		a.update_date,
+		a.del_flag,
+		a.useable AS useable,
+		a.user_id AS "user.id",
+		p.name AS "parent.name",
+		ar.name AS "area.name",
+		pp.login_name AS "loginName"
+	</sql>
+	
+	<sql id="orgRefColumns">
+		a.id,
+		a.parent_id AS "parentId",
+		a.name
+	</sql>
+	
+	<sql id="orgColumns">
+		a.id AS "id",
+		a.name AS "text",
+		CASE WHEN a.leaf='1' THEN 'false' ELSE 'true' END AS "children"
+	</sql>
+	
+	<sql id="officeJoins">
+		LEFT JOIN sys_office p ON p.id = a.parent_id
+		LEFT JOIN sys_area ar ON ar.id = a.area_id
+		LEFT JOIN sys_user pp ON pp.id = a.user_id
+    </sql>
+	
+	<select id="get" resultType="Office">
+		SELECT
+			<include refid="officeColumns"/>
+		FROM sys_office a
+		<include refid="officeJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Office">
+		SELECT
+			<include refid="officeColumns"/>
+		FROM sys_office a
+		<include refid="officeJoins"/>
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+		<!-- 数据范围过滤 -->
+		${sqlMap.dsf}
+		OR a.id = #{currentUser.office.id}
+		ORDER BY a.sort
+	</select>
+	
+	<select id="findAllOrgsByParentId" resultType="Orgization">
+		SELECT
+		<include refid="orgColumns"/>
+		FROM sys_office a
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+		<if test="id!=null and id!=''">
+			AND a.parent_id=${id}
+		</if>
+		ORDER BY a.sort
+	</select>
+	
+	<select id="findOrgList" resultType="Office">
+		SELECT
+			<include refid="officeColumns"/>
+		FROM sys_office a
+			<include refid="officeJoins"/>
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+		<if test="name != null and name != ''">
+			AND a.name LIKE CONCAT(#{name},'%')  
+		</if>
+		<if test="parentId != null">
+			AND a.parent_id = #{parentId}
+		</if>
+		ORDER BY a.sort
+	</select>
+	
+	<select id="findByParentId" resultType="Office">
+		SELECT <include refid="orgRefColumns"/>
+		FROM sys_office a
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+		<if test="parentId != null">
+			AND a.id = #{parentId}
+		</if>
+		ORDER BY a.sort
+	</select>
+	
+	<select id="findMaxSort" resultType="java.lang.Integer">
+		SELECT IFNULL(MAX(a.sort), 0) FROM sys_office a
+			<include refid="officeJoins"/>
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+		<if test="parentId != null and parentId != ''">
+			AND a.parent_id = #{parentId}
+		</if>
+	</select>
+			
+	<select id="findAllList" resultType="Office">
+		SELECT
+			<include refid="officeColumns"/>
+		FROM sys_office a
+		<include refid="officeJoins"/>
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+		ORDER BY a.sort
+	</select>
+	
+	<select id="findByParentIdsLike" resultType="Office">
+		SELECT
+			<include refid="officeColumns"/>
+		FROM sys_office a
+		<include refid="officeJoins"/>
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL} AND a.parent_ids LIKE #{parentIds}
+		ORDER BY a.sort
+	</select>
+	
+	<select id="findOfficeTree" resultType="Office">
+	SELECT b.cnt AS "count", a.id AS "id", a.parent_id AS "parentId", a.name AS "name" FROM sys_office a 
+	LEFT JOIN (select COUNT(1) AS cnt, parent_id FROM sys_office GROUP BY parent_id) AS b 
+	ON a.id = b.parent_id 
+	WHERE a.parent_id = #{orgId}
+	ORDER BY sort
+	</select>
+	
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO sys_office(
+			area_id,
+			parent_id,
+			name, 
+			sort, 
+			type, 
+			address, 
+			zip_code, 
+			master, 
+			phone, 
+			qq, 
+			email, 
+			create_by, 
+			create_date, 
+			update_by, 
+			update_date, 
+			del_flag,
+			useable,
+			title,
+			logo
+		) VALUES (
+			#{area.id},
+			#{parentId},
+			#{name}, 
+			#{sort}, 
+			#{type}, 
+			#{address}, 
+			#{zipCode}, 
+			#{master}, 
+			#{phone}, 
+			#{qq}, 
+			#{email}, 
+			#{createBy.id}, 
+			#{createDate}, 
+			#{updateBy.id}, 
+			#{updateDate}, 
+			#{delFlag},
+			#{useable},
+			#{title},
+			#{logo}
+		)
+		<selectKey resultType="Integer" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID() AS id
+        </selectKey>
+	</insert>
+	
+	<update id="update">
+		UPDATE sys_office SET 
+			parent_id = #{parentId}, 
+			parent_ids = #{parentIds}, 
+			area_id = #{area.id}, 
+			name = #{name}, 
+			type = #{type}, 
+			address = #{address}, 
+			zip_code = #{zipCode}, 
+			master = #{master}, 
+			phone = #{phone}, 
+			qq = #{qq}, 
+			email = #{email}, 
+			update_by = #{updateBy.id}, 
+			update_date = #{updateDate}, 
+			useable=#{useable},
+			title=#{title},
+			logo=#{logo}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateParentIds">
+		UPDATE sys_office SET 
+			parent_id = #{parent.id}, 
+			parent_ids = #{parentIds}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="deleteByParentId">
+		UPDATE sys_office SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE parent_id = #{parentId} 
+		OR id = #{parentId}
+	</update>
+	
+	<update id="delete">
+		UPDATE sys_office SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id} OR parent_ids LIKE 
+					<if test="dbName == 'oracle'">'%,'||#{id}||',%'</if>
+					<if test="dbName == 'mssql'">'%,'+#{id}+',%'</if>
+					<if test="dbName == 'mysql'">CONCAT('%,', #{id}, ',%')</if>
+	</update>
+	
+</mapper>

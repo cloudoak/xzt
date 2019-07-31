@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ambition.agile.modules.ante.dao.DepartmentDao">
+    
+	<sql id="departmentColumns">
+		a.id AS "id",
+		a.dept_name AS "deptName",
+		a.dept_brief AS "deptBrief",
+		a.create_date AS "createDate",
+		a.create_by AS "createBy.id",
+		a.update_date AS "updateDate",
+		a.update_by AS "updateBy.id",
+		a.del_flag AS "delFlag",
+		a.org_id AS "orgId"
+	</sql>
+	
+	<sql id="departmentJoins">
+	</sql>
+    
+	<select id="get" resultType="Department">
+		SELECT 
+			<include refid="departmentColumns"/>
+		FROM department a
+		<include refid="departmentJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Department">
+		SELECT 
+			<include refid="departmentColumns"/>
+		FROM department a
+		<include refid="departmentJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="orgId != null and orgId != ''">
+				AND a.org_id 
+			</if>
+			<if test="deptName != null and deptName != ''">
+				AND a.dept_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{deptName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{deptName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{deptName},'%')</if>
+			</if>
+			<if test="orgId != null and orgId != ''">
+				AND a.org_id = #{orgId}
+			</if>
+			<if test="organization !=null  and organization != ''">
+				AND a.org_id IN(${organization})
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Department">
+		SELECT 
+			<include refid="departmentColumns"/>
+		FROM department a
+		<include refid="departmentJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO department(
+			id,
+			dept_name,
+			dept_brief,
+			create_date,
+			create_by,
+			update_date,
+			update_by,
+			del_flag,
+			org_id
+		) VALUES (
+			#{id},
+			#{deptName},
+			#{deptBrief},
+			#{createDate},
+			#{createBy.id},
+			#{updateDate},
+			#{updateBy.id},
+			#{delFlag},
+			#{orgId}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE department SET 	
+			dept_name = #{deptName},
+			dept_brief = #{deptBrief},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id},
+			org_id =#{orgId}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE department SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

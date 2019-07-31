@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ambition.agile.modules.ante.dao.MessageInfoDao">
+    
+	<sql id="messageInfoColumns">
+		a.id AS "id",
+		a.from_user AS "fromUser",
+		a.to_user AS "toUser",
+		a.title AS "title",
+		a.content AS "content",
+		a.status AS "status",
+		a.create_date AS "createDate",
+		a.create_by AS "createBy.id",
+		a.update_date AS "updateDate",
+		a.update_by AS "updateBy.id",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="messageInfoJoins">
+	</sql>
+    
+	<select id="get" resultType="MessageInfo">
+		SELECT 
+			<include refid="messageInfoColumns"/>
+		FROM message_info a
+		<include refid="messageInfoJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="MessageInfo">
+		SELECT 
+			<include refid="messageInfoColumns"/>
+		FROM message_info a
+		<include refid="messageInfoJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="toUser != null and toUser != ''">
+				AND a.to_user = #{toUser}
+			</if>
+			<if test="title != null and title != ''">
+				AND a.title LIKE 
+					<if test="dbName == 'oracle'">'%'||#{title}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{title}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{title},'%')</if>
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="MessageInfo">
+		SELECT 
+			<include refid="messageInfoColumns"/>
+		FROM message_info a
+		<include refid="messageInfoJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL} 
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO message_info(
+			from_user,
+			to_user,
+			title,
+			content,
+			status,
+			create_date,
+			create_by,
+			remarks,
+			del_flag
+		) VALUES (
+			#{fromUser},
+			#{toUser},
+			#{title},
+			#{content},
+			#{status},
+			#{createDate},
+			#{createBy.id},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE message_info SET 	
+			from_user = #{fromUser},
+			to_user = #{toUser},
+			title = #{title},
+			content = #{content},
+			status = #{status},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id},
+			remarks = #{remarks},
+			del_flag = #{delFlag}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE message_info SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

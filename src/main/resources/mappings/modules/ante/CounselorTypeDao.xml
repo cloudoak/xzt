@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ambition.agile.modules.ante.dao.CounselorTypeDao">
+    
+	<sql id="counselorTypeColumns">
+		a.id AS "id",
+		a.type_name AS "typeName",
+		a.create_date AS "createDate",
+		a.create_by AS "createBy.id",
+		a.update_date AS "updateDate",
+		a.update_by AS "updateBy.id",
+		a.org_id AS "orgId",
+		a.del_flag AS "delFlag",
+		a.comment AS "comment",
+		a.permission AS "permission"
+	</sql>
+	
+	<sql id="counselorTypeJoins">
+	</sql>
+    
+	<select id="get" resultType="CounselorType">
+		SELECT 
+			<include refid="counselorTypeColumns"/>
+		FROM counselor_type a
+		<include refid="counselorTypeJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CounselorType">
+		SELECT 
+			<include refid="counselorTypeColumns"/>
+		FROM counselor_type a
+		<include refid="counselorTypeJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="typeName != null and typeName != ''">
+				AND a.type_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{typeName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{typeName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{typeName},'%')</if>
+			</if>
+			<if test="orgId != null and orgId != ''">
+				AND a.org_id = #{orgId}
+			</if>
+			<if test="organization !=null  and organization != ''">
+				AND a.org_id IN(${organization})
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CounselorType">
+		SELECT 
+			<include refid="counselorTypeColumns"/>
+		FROM counselor_type a
+		<include refid="counselorTypeJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO counselor_type(
+			type_name,
+			create_date,
+			create_by,
+			update_date,
+			update_by,
+			org_id,
+			del_flag,
+			comment,
+			permission
+		) VALUES (
+			#{typeName},
+			#{createDate},
+			#{createBy.id},
+			#{updateDate},
+			#{updateBy.id},
+			#{orgId},
+			#{delFlag},
+			#{comment},
+			#{permission}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE counselor_type SET
+			type_name = #{typeName},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id},
+			org_id = #{orgId},
+			del_flag = #{delFlag},
+			comment =#{comment},
+			permission =#{permission}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE counselor_type SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

@@ -1,0 +1,46 @@
+@charset "utf-8";
+/* CSS Document */
+html,body{ font-size:20px; width:100%; height:100%; color:#333;}
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,button,textarea,p,blockquote,th,td{margin:0;padding:0;}fieldset,img{border:0;}li{list-style:none;}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal;}input,button,textarea,select,optgroup,option{font:inherit; outline:none;-webkit-appearance:none;}a{text-decoration:none; color:#333;}.clear{clear:both;}.left{ float:left;}.right{ float:right;}
+body{font-family:Arial,"Microsoft Yahei",Helvetica,sans-serif;-webkit-tap-highlight-color:rgba(0, 0, 0, 0);-webkit-text-size-adjust:none;-webkit-transform:translateZ(0);transform:translateZ(0);}
+
+/*头部*/
+.Header{ width:100%; height:2.25rem; position:absolute; background:#3bc8ac; top:0px; z-index:11;}
+.Header .Return{ position:absolute; left:0px;}
+.Header .Return i{ background:url(../mobile-images/Return.png) no-repeat; display:block; height:2.25rem; width:2.25rem;background-size:100%;}
+.Header .HeaderWen{ position:absolute; right:0px; top:0px;}
+.Header .HeaderWen i{ background:url(../mobile-images/ico21.png) no-repeat center; display:block; height:2.25rem; width:2.25rem;}
+.Header .Headerxinxi{ position:absolute; right:0px; top:0px;}
+.Header .Headerxinxi i{ background:url(../mobile-images/ico23.png) no-repeat center; display:block; height:2.25rem; width:2.25rem;}
+.Header h1{ color:#fff; text-align:center;font-size:0.9rem; line-height:2.25rem;}
+.Header .HeaderTxt{ position:absolute;right:0.75rem;top:0px;line-height:2.25rem;font-size:0.7rem; color:#fff;}
+.Header .HeaderRegion {position:absolute; left:1.8rem; top:0px; background:url(../mobile-images/ico12.png) right no-repeat; padding:0 0.7rem 0 0;}
+.Header .HeaderRegion input{ border:0px; line-height:2.25rem; font-size:0.7rem; background:none; color:#fff; width:1.4rem;}
+.Header .Headerbut{ width:2.25rem; height:1.1rem; border:solid 1px #fff; color:#fff; line-height:1.1rem;position:absolute; right:0.75rem; top:0.56rem; font-size:0.7rem; text-align:center;border-radius:1.1rem;}
+.Headerparent{ background:none;}
+
+/*底部导航*/
+.bottomNav{ width:100%; height:2.5rem; position:absolute; background:#fff; border-top:solid 1px #ededee; bottom:0px; z-index:11;}
+.bottomNav li{ float:left; width:33.333%; text-align:center; font-size:0.6rem;}
+.bottomNav li a{color:#a6a8b6; display:block;}
+.bottomNav li em{ width:1.25rem; height:1.125rem; display:block; margin:0.35rem auto 0.1rem auto; background-repeat:no-repeat;}
+.bottomNav li em.em1{background-image: url(../mobile-images/nav1.png);}
+.bottomNav li em.em2{background-image: url(../mobile-images/nav2.png);}
+.bottomNav li em.em3{background-image: url(../mobile-images/nav3.png);}
+.bottomNav li.on a{color:#3bc8ac;}
+.bottomNav li.on em.em1{background-image: url(../mobile-images/nav1on.png);}
+.bottomNav li.on em.em2{background-image: url(../mobile-images/nav2on.png);}
+.bottomNav li.on em.em3{background-image: url(../mobile-images/nav3on.png);}
+
+/*按钮*/
+.button_1{padding:2rem 1.25rem;}
+.button_2{padding:1rem 35% 1rem 35%;}
+.buttoninput{font-size: 0.7rem;  color: #fff; height: 2.2rem; background: #3bc8ac; border-radius: 2.2rem;text-align: center;line-height: 2.2rem; width:100%; border: 1px solid #3bc8ac; font-weight:bold;}
+.buttoninput1{font-size: 0.7rem;  color: #f6ad7b; height: 2.2rem; background: #ffffff; border-radius: 2.2rem;text-align: center;line-height: 2.2rem; width:100%; border: 1px solid #f3892d; font-weight:bold;}
+.buttoninput2{font-size: 0.7rem;  color: #3bc8ac; height: 2.2rem; background: #ffffff; border-radius: 2.2rem;text-align: center;line-height: 2.2rem; width:100%; border: 1px solid #3bc8ac; font-weight:bold;}
+
+
+/*默认公用样式*/
+.main{ width:100%; height:100%; overflow:hidden; position:absolute; overflow-y:scroll;z-index:1;}
+.main .Headerbg{width:100%; height:2.25rem;}
+.main .bottomNavbg{width:100%; height:2.55rem;}

@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ambition.agile.modules.jzmk.dao.QuestionDao">
+    
+	<sql id="questionColumns">
+		a.id AS "id",
+		a.content AS "content",
+		a.number AS "number",
+		a.parentid AS "parentId",
+		a.sid AS "sid",
+		CASE WHEN (SELECT question_id FROM answer WHERE question_id = a.id GROUP BY question_id) IS NULL THEN '0' ELSE '1' END AS "isSetAnswer",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.org_id AS "orgId",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="questionJoins">
+	</sql>
+    
+	<select id="get" resultType="Question">
+		SELECT 
+			<include refid="questionColumns"/>
+		FROM question a
+		<include refid="questionJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findTotalScores" resultType="java.math.BigDecimal">
+	SELECT SUM(a.score) AS "score" FROM question q 
+	LEFT JOIN (SELECT question_id, SUM(score) AS "score" FROM answer GROUP BY question_id) a 
+	ON q.id = a.question_id 
+	WHERE q.sid = #{sid}
+	</select>
+	
+	<select id="findLastAllQuestions" resultType="Question">
+		SELECT 
+			<include refid="questionColumns"/>
+		FROM question a
+			<include refid="questionJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="sid != null and sid != ''">
+				AND a.sid = #{sid}
+			</if>
+			<if test="number != null and number != ''">
+				AND a.number <![CDATA[  >=  ]]> #{number}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.number ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findMaxNumber" resultType="java.lang.Integer">
+		SELECT IFNULL(MAX(number),0) AS "number"
+		FROM question
+		WHERE del_flag = #{DEL_FLAG_NORMAL} AND sid = #{sid}
+	</select>
+	
+	<select id="findList" resultType="Question">
+		SELECT 
+			<include refid="questionColumns"/>
+		FROM question a
+		<include refid="questionJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL} 
+			<if test="number != null and number != ''">
+				AND a.number = #{number}
+			</if>
+			<if test="sid != null and sid != ''">
+				AND a.sid = #{sid}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.number ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findBySidRoot" resultType="java.lang.String">
+		SELECT IFNULL(a.question_id, 0) AS "isSetAnswer" FROM question q 
+		LEFT JOIN answer a ON(q.id = a.question_id) 
+		WHERE q.sid = #{sid} AND q.del_flag = #{DEL_FLAG_NORMAL} AND q.parentid='0'
+		GROUP BY a.question_id
+	</select>
+	
+	<select id="findBySidChilren" resultType="java.lang.String">
+		SELECT IFNULL(a.question_id, 0) AS "isSetAnswer" FROM 
+			(SELECT IFNULL(q.id, 0) AS "id", q.sid FROM question q 
+			LEFT JOIN question q1 
+			ON q.parentid LIKE CONCAT('%', q1.id ,'%') 
+			WHERE q.sid = #{sid} 
+			AND q.del_flag = #{DEL_FLAG_NORMAL}
+			AND q1.parentid='0' 
+			GROUP BY q.id, q.sid) q2
+		LEFT JOIN answer a ON(q2.id = a.question_id) 
+		WHERE q2.sid = #{sid}
+		GROUP BY a.question_id
+	</select>
+	
+	<select id="findByParentIdRoot" resultType="Question">
+		SELECT 
+			<include refid="questionColumns"/>
+		FROM question a
+		<include refid="questionJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL} AND a.parentid = 0
+			<if test="number != null and number != ''">
+				AND a.number = #{number}
+			</if>
+			<if test="sid != null and sid != ''">
+				AND a.sid = #{sid}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.number ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findChildrenList" resultType="Question">
+		SELECT 
+			<include refid="questionColumns"/>
+		FROM question a
+		<include refid="questionJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="parentId != null and parentId != ''">
+				AND a.parentid LIKE CONCAT('%','${parentId}','%' )
+			</if>
+			<if test="number != null and number != ''">
+				AND a.number = #{number}
+			</if>
+			<if test="sid != null and sid != ''">
+				AND a.sid = #{sid}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.number ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findByParentidAndSid" resultType="Question">
+		SELECT 
+			<include refid="questionColumns"/>
+		FROM question a
+		<include refid="questionJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="parentId != null and parentId != ''">
+				AND a.parentid LIKE CONCAT('%','${parentId}','%' )
+			</if>
+			<if test="sid != null and sid != ''">
+				AND a.sid = #{sid}
+			</if>
+		</where>
+		ORDER BY a.number ASC
+	</select>
+	
+	<select id="findAllList" resultType="Question">
+		SELECT 
+			<include refid="questionColumns"/>
+		FROM question a
+		<include refid="questionJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findMaxQuestion" resultType="Question">
+		SELECT <include refid="questionColumns"/> FROM question a
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL} AND a.number &gt; #{number} AND a.sid = #{sid}
+		ORDER BY a.number ASC 
+		LIMIT 1;
+	</select>
+	
+	<select id="findMinQuestion" resultType="Question">
+		SELECT <include refid="questionColumns"/> FROM question a
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL} AND a.number &lt; #{number} AND a.sid = #{sid} 
+		ORDER BY a.number DESC 
+		LIMIT 1;
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO question(
+			content,
+			number,
+			<if test="parentId != null and parentId != ''">  
+			parentid,
+			</if>
+			sid,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			org_id,
+			del_flag
+		) VALUES (
+			#{content},
+			#{number},
+			<if test="parentId != null and parentId != ''">  
+			#{parentId},
+			</if>
+			#{sid},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{orgId},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE question SET 	
+			content = #{content},
+			number = #{number},
+			parentid = #{parentId},
+			sid = #{sid},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			org_id = #{orgId},
+			del_flag = #{delFlag}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE question SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<delete id="deleteQuestion">
+		DELETE FROM question WHERE id = #{id}
+	</delete>
+	
+</mapper>

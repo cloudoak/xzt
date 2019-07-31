@@ -1,0 +1,557 @@
+.footer-index{
+    padding: 40px 0 25px;
+}
+/*------ 登录页面开始---------*/
+.login-container {
+    background: #4bc05a url(../images/cloud.jpg) no-repeat center top;
+    height: 575px;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+}
+.login-container .wrapper {
+    width: 1120px;
+    margin: 0 auto;
+}
+.login-container .balloon {
+    /*margin-left: 280px;*/
+    width: 56%;
+    height: 100%;
+}
+.login-form {
+    /*margin-top: 78px;*/
+    margin-top: 40px;
+    float: right;
+    box-shadow: 1.5px 2.59px 9px 5px rgba(61, 122, 69, .46);
+    background: #fff;
+    width: 318px;
+    height: 370px;
+    margin-right: 15px;
+    padding: 24px 26px 0;
+}
+.login-form .title,
+.register-form .title {
+    font-size: 20px;
+    color: #404040;
+    margin: 0 auto 18px;
+    /*width: 85%;*/
+}
+.login-form .field {
+    border: 1px solid #d2d2d2;
+    height: 44px;
+    width: 318px;
+    margin-top: 9px;
+    background: #fff;
+    position: relative;
+}
+.login-form .field .icon {
+    border-right: 1px solid #cbcbcb;
+    padding: 0 12px;
+    margin-top: 6px;
+    height: 33px;
+    background-position: center;
+    background-repeat: no-repeat;
+    /*width: 26px;*/
+    width: 8%;
+    float: left;
+    display: inline-block;
+}
+.login-form .field .icon-user {
+    background-image: url(../images/icon-user.jpg);
+}
+.login-form .field .icon-key {
+    background-image: url(../images/icon-key.jpg);
+}
+.login-form .field .icon-code {
+    background-image: url(../images/icon-code.jpg);
+}
+.login-form .field input,
+.register-form .field input,
+.register-form .field select {
+    border: 0;
+    background: transparent;
+    height: 32px;
+    padding: 6px 0;
+    width: 70%;
+    line-height: 32px;
+    color: #b6b6b6;
+    font-size: 12px;
+    padding-left: 16px;
+}
+.login-form .field .imgcode {
+    /*width: 82px;*/
+    width: 25.7%;
+    height: 38px;
+    margin: 3px 6px;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+.login-form .btn-login,
+.register-form .btn-register {
+    background: #63ce72;
+    width: 100%;
+    margin: 30px auto 0;
+    height: 49px;
+    line-height: 49px;
+    color: #fff;
+    font-size: 18px;
+    text-align: center;
+}
+.login-form .bottom {
+    font-size: 12px;
+    color: #7a7a7a;
+    width: 100%;
+    margin: 15px auto 0;
+}
+.login-form .signup {
+    color: #ff7800;
+}
+.login-form .forgetkey {
+    color: #7a7a7a;
+}
+/*------登录页结束----------*/
+/*------注册页开始----------*/
+.register-container {
+    border-top: 3px solid #f2f2f2;
+    overflow: hidden;
+}
+.register-container .wrapper {
+    width: 1120px;
+    margin: 0 auto;
+    height: 100%;
+}
+.register-form {
+    width: 920px;
+    margin-top: 30px;
+    margin-left: 79px;
+}
+.register-form .title {
+    margin-bottom: 13px;
+    display: none;
+}
+.register-form .form-tab .item {
+    padding: 0 27px;
+    position: relative;
+    /*height: 52px;*/
+    /*line-height: 52px;*/
+    height: 46px;
+    line-height: 46px;
+    text-align: center;
+    background-position: 27px center;
+    background-repeat: no-repeat;
+    display: inline-block;
+    float: left;
+}
+.register-form .form-tab .visitor {
+    background-image: url(../images/visitor.png);
+    padding-left: 63px;
+}
+.register-form .form-tab .family {
+    background-image: url(../images/family.png);
+    padding-left: 62px;
+}
+.register-form .form-tab .counselor {
+    background-image: url(../images/counselor.png);
+    padding-left: 65px;
+}
+.register-form .form-tab .item.current {
+    background-color: #63ce72;
+    color: #fff;
+}
+.register-form .form-tab .item.current:after {
+    content: '';
+    position: absolute;
+    top: 32.5px;
+    left: 50%;
+    margin-left: -12.5px;
+    width: 25px;
+    height: 25px;
+    background: url(../images/rect.png) no-repeat;
+}
+.register-form .form-wrapper .left,
+.register-form .form-wrapper .right {
+    width: 45%;
+    margin-top: 25px;
+    /*margin-top: 64px;*/
+    /*margin-bottom: 67px;*/
+    float: left;
+}
+.register-form .form-wrapper .right {
+    float: right;
+}
+.register-form .field {
+    margin-bottom: 19px;
+    height: 46px;
+    line-height: 46px;
+}
+.register-form .field label {
+    width: 70px;
+    display: inline-block;
+    color: #383838;
+}
+.register-form .field input,
+.register-form .field select {
+    border: 1px solid #d2d2d2;
+    font-size: 16px;
+}
+.register-form .field select {
+    height: 44px;
+    border-radius: 0;
+    appearance:none;
+  -moz-appearance:none;
+  -webkit-appearance:none;
+  padding-right: 14px;
+  background: url(../images/arrow.png) no-repeat right center;
+  color: dimgray;
+  width: 74.2%;
+  position: relative;
+}
+.register-form .field .ipt-radio {
+    position: relative;
+    padding-left: 20px;
+    margin-right: 35px;
+    display: inline-block;
+}
+.register-form .field .radio {
+    width: 15px;
+    height: 15px;
+    position: absolute;
+    left: 0;
+    top: 12px;
+    border-radius: 100%;
+    line-height: 10px;
+}
+.register-form .field .fold {
+    background: url(../images/fold.png) no-repeat 4px center;
+    padding-left: 26px;
+    color: #383838;
+    cursor: pointer;
+    display: inline-block;
+}
+.register-form .btn-register {
+    clear: both;
+    width: 320px;
+    margin-top: 35px;
+    display: block;
+}
+/*------注册页结束----------*/
+/*------- 适配开始 ----------- */
+@media only screen and (max-width: 1120px) {
+    .login-container .wrapper {
+        width: 90%;
+    }
+    .register-container .wrapper {
+        width: 92%;
+    }
+    .register-form {
+        margin-left: 0;
+        width: 100%;
+    }
+}
+@media only screen and (max-width: 1109px) {
+    .login-container .balloon {
+        width: 55%;
+    }
+}
+@media only screen and (max-width: 959px) {
+    .login-container .wrapper {
+        width: 100%;
+    }
+    .login-container .balloon {
+        width: 50%;
+        margin-top: 30px;
+    }
+}
+@media only screen and (max-width: 890px) {
+    .register-form .form-wrapper .left,
+    .register-form .form-wrapper .right {
+        width: 50%;
+    }
+    .register-form .field input {
+        width: 70%;
+    }
+    .register-form .field select {
+        width: 74.6%
+    }
+    .footer-register {
+        display: none;
+    }
+    .footer-index {
+        display: block;
+    }
+}
+@media only screen and (max-width: 770px) {
+    .login-container .balloon {
+        display: none;
+    }
+    .login-form {
+        margin: 78px auto 0;
+        float: none;
+    }
+    .register-container .wrapper {
+        width: 96%;
+    }
+    .register-form .form-wrapper {
+        width: 92%;
+        margin: 0 auto;
+    }
+    .register-form .form-wrapper .left,
+    .register-form .form-wrapper .right {
+        float: none;
+        margin-bottom: 0;
+        width: 79%;
+        margin: 34px auto 0;
+    }
+    .register-form .form-wrapper .right {
+        margin-top: 0;
+    }
+    .register-form .field input {
+        /*width: 302px;*/
+    }
+    .register-form .field select {
+        /*width: 320px;*/
+    }
+    .register-form .btn-register {
+        width: 305px;
+    }
+}
+@media only screen and (max-width: 639px) {
+    .login-container .login-form {
+        display: block;
+        margin: 0 auto;
+        background: none;
+        box-shadow: none;
+        padding-top: 36px;
+    }
+    .register-form {
+        width: 100%;
+    }
+    .register-form .select {
+        position: relative;
+    }
+}
+@media only screen and (max-width: 550px) {
+    body {
+        background: #f9f9f9;
+    }
+    .header {
+        background: #fff;
+    }
+    .register-container .wrapper {
+        width: 100%;
+    }
+    .register-container .wrapper .form-tab{
+        width: 74%;
+        margin-left: 5%;
+    }
+    .register-form .title {
+        text-indent: 24px;
+    }
+    .register-form .form-wrapper .left,
+    .register-form .form-wrapper .right {
+        margin-top: 15px;
+    }
+    .register-form .form-tab {
+        width: 92.9%;
+        margin-left: 7%;
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: -ms-flexbox;
+        display: flex;
+    }
+    .register-form .form-tab .item {
+        background-size: 13px;
+        height: 26px;
+        line-height: 26px;
+        -webkit-box-flex: 1;
+        -webkit-flex: 1;
+        -ms-flex: 1;
+        flex: 1;
+        background-position: 18px center;
+        text-indent: 20px;
+        padding-left: 0;
+        padding-right: 0;
+        font-size: 12px;
+    }
+    .register-form .form-tab .item.current:after {
+        top: 19.5px;
+        background-size: 12.5px;
+        margin-left: -6.25px;
+    }
+    .register-container .wrapper,
+    .register-form {
+        width: 100%;
+    }
+    .register-form .form-wrapper .left,
+    .register-form .form-wrapper .right {
+        width: 100%;
+    }
+    .register-form .form-wrapper {
+        width: 84.5%;
+        margin: 0 auto;
+    }
+    .register-form .field {
+        height: 78px;
+        font-size: 12px;
+        margin-bottom: 10px;
+    }
+    .register-form .title,
+    .register-form .field label {
+        display: block;
+    }
+    .register-form .field label {
+        line-height: 32px;
+    }
+    .register-form .field input,
+    .register-form .field select {
+        font-size: 12px;
+        background: white;
+        width: 95%;
+    }
+    .register-form .field select {
+        width: 99%;
+    }
+    .register-form .single {
+        height: 30px;
+        line-height: 40px;
+    }
+    .register-form .single label {
+        display: inline-block;
+    }
+    .register-form .field .radio {
+        top: 9px;
+    }
+    .register-form .btn-register {
+        /*width: 96%;*/
+        width: 100%;
+        margin-left: 0;
+    }
+    .register-form .select:after{
+        content: '';
+        display: block;
+        position: absolute;
+        right: 10px;
+        background: url(../images/arrow.png) right center no-repeat;
+        width: 20px;
+        height: 44px;
+        top: 32px;
+    }
+}
+@media only screen and (max-width: 479px) {
+    .header .logo {
+        width: 66%;
+    }
+    .header .logo img {
+        min-width: 252px;
+    }
+    .header .sidebar {
+        width: 32%;
+        padding-top: 6px;
+    }
+    .header .entrance {
+        width: 69%;
+        float: left;
+        text-align: right;
+    }
+    .header .entrance-btn {
+        width: 42.6%;
+        height: 17px;
+    }
+    .header .entrance-btn span {
+        display: block;
+        -webkit-transform: scale(.8);
+     -moz-transform: scale(.8);
+      -ms-transform: scale(.8);
+       -o-transform: scale(.8);
+          transform: scale(.8);
+        line-height: 20px;
+    }
+    .header .collapsed {
+        width: 27px;
+        height: 20px;
+        margin-left: 10px;
+    }
+    .register-form .field .radio {
+        top: 10px;
+    }
+    .register-container .wrapper .form-tab{
+        width: 86%;
+        margin: 0 auto;
+    }
+    .register-form .form-tab .item {
+        background-position: 13px center;
+    }
+}
+@media only screen and (max-width: 380px) {
+    .header {
+        padding-bottom: 15px;
+    }
+    .header .logo {
+        width: 60%;
+    }
+    .header .logo img {
+        min-width: 187px;
+    }
+    .header .sidebar {
+        width: 35%;
+        margin-top: 22px;
+    }
+    .login-form {
+        width: 90%;
+        padding-left: 0;
+        padding-right: 0;
+    }
+    .login-form .field {
+        width: 100%;
+    }
+    .register-form .field select {
+        width: 99%;
+    }
+}
+/*--------------自适应结束-------*/
+.header .sidebar .nav-table {
+    position: fixed;
+    z-index: 5;
+    bottom: 0px;
+    top: 0px;
+    right: -50%;
+    margin: 0;
+    padding: 0px;
+    width: 30%;
+    white-space: nowrap;
+    box-shadow: none;
+    border-top: 0px solid white;
+    overflow-y: auto;
+    background-color: #43bb53;
+    background: rgba(67, 187, 83, .85);
+    display: block;
+    overflow-x: hidden;
+    -webkit-transition: all .25s ease-out;
+    transition: all .25s ease-out;
+}
+.header .sidebar .active {
+    right: 0;
+    margin-right: 0;
+}
+.header .nav-table li {
+    display: block;
+    width: 100%;
+    font-size: 16px;
+    line-height: 1.2;
+    border-bottom: solid #cbcbcb 1px;
+    padding: 10px 20px;
+}
+.header .nav-table .passport {
+    display: block;
+}
+.header .nav-table li a {
+    color: #fff;
+}
+.header .nav-table li.current {
+    -webkit-border-radius: 0;
+     -moz-border-radius: 0;
+          border-radius: 0;
+          background: transparent;
+}
+

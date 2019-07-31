@@ -1,0 +1,18 @@
+ul.ztree {
+   	background: #F5F5F5;
+	overflow-y:scroll;
+	/* overflow-x:auto; */
+	width:100%;
+   	height: 300px;
+}
+.menuContent{
+	position:absolute;
+   	display:none; 
+   	left:center;
+   	top:0px;
+   	width:240px;
+   	height: 300px;
+   	overflow:hidden;
+   	z-index: 1000;
+   	border:1px solid #708090;
+ }

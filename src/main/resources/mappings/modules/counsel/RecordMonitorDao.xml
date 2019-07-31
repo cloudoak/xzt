@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ambition.agile.modules.counsel.dao.RecordMonitorDao">
+    
+	<sql id="recordMonitorColumns">
+		a.id AS "id",
+		a.record_id AS "recordId",
+		a.counselor_id AS "counselorId",
+		a.counselor_name AS "counselorName",
+		a.monitor_status AS "monitorStatus",
+		a.content AS "content",
+		a.creator_id AS "creatorId",
+		a.create_date AS "createDate",
+		a.del_flag AS "delFlag",
+		a.org_id AS "orgId"
+	</sql>
+	
+	<sql id="recordMonitorJoins">
+	</sql>
+    
+	<select id="get" resultType="RecordMonitor">
+		SELECT 
+			<include refid="recordMonitorColumns"/>
+		FROM record_monitor a
+		<include refid="recordMonitorJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="RecordMonitor">
+		SELECT 
+			<include refid="recordMonitorColumns"/>
+		FROM record_monitor a
+		<include refid="recordMonitorJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="recordId != null and recordId != ''">
+				AND a.record_id = #{recordId}
+			</if>
+			<if test="counselorId != null and counselorId != ''">
+				AND a.counselor_id = #{counselorId}
+			</if>
+			<if test="counselorName != null and counselorName != ''">
+				AND a.counselor_name = #{counselorName}
+			</if>
+			<if test="monitorStatus != null and monitorStatus != ''">
+				AND a.monitor_status = #{monitorStatus}
+			</if>
+			<if test="createBy != null and createBy != ''">
+				AND a.create_by = #{createBy}
+			</if>
+			<if test="orgId != null and orgId != ''">
+				AND a.org_id = #{orgId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="RecordMonitor">
+		SELECT 
+			<include refid="recordMonitorColumns"/>
+		FROM record_monitor a
+		<include refid="recordMonitorJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO record_monitor(
+			record_id,
+			counselor_id,
+			counselor_name,
+			monitor_status,
+			content,
+			creator_id,
+			create_date,
+			del_flag,
+			org_id
+		) VALUES (
+			#{recordId},
+			#{counselorId},
+			#{counselorName},
+			#{monitorStatus},
+			#{content},
+			#{creatorId},
+			#{createDate},
+			#{delFlag},
+			#{orgId}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE record_monitor SET 	
+			record_id = #{recordId},
+			counselor_id = #{counselorId},
+			counselor_name = #{counselorName},
+			monitor_status = #{monitorStatus},
+			content = #{content},
+			org_id = #{orgId}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE record_monitor SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<delete id="deleteByRecord">
+		DELETE from record_monitor 
+		WHERE record_id = #{recordId}
+	</delete>
+	
+	
+</mapper>

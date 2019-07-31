@@ -1,0 +1,36 @@
+@charset "utf-8";
+/* CSS Document */
+.Mirrorbox{ padding:0 4% 0.9rem 4%;}
+.Mirrorbanner{ float:left; margin-top:0.9rem; width:100%;}
+.Mirrorbanner img{ float:left; border-radius: 0.5rem;}
+.Mirrorbox .text h2{ height:2.3rem; line-height:2.3rem; display:block; font-size:0.8; font-weight:400; position:relative; top:0.1rem;}
+.Mirrorbox .text p{ font-size:0.65rem; line-height:1rem; color:#666;}
+
+.cesi_top{ background:#fff; padding:0 4% 0.9rem 4%;}
+.cesi_top .cesifen{ text-align:center; margin-top:1rem; float:left; width:100%;margin-bottom: 0.5rem;}
+.cesi_top .cesifen span{ color:#f3892d; font-size:1.25rem; font-weight:bold;}
+.cesi_top .cesifen p{ color:#333; font-size:0.8rem; margin-top:0.2rem;}
+.cesi_top dl dt{ height:2.4rem; display:block; width:100%; float:left; line-height:2.4rem; color:#666; font-size:0.7rem; text-indent:1.4rem;}
+.cesi_top dl dt.em1{ background:url(../../images/ico7.png) no-repeat 0px;}
+.cesi_top dl dt.em2{ background:url(../../images/ico8.png) no-repeat 0px;}
+.cesi_top dd{ font-size:0.65rem; line-height:1rem; color:#666;}
+
+.cesi_bottom{ background:#fff; padding:0 4% 0.9rem 4%; margin-top:0.5rem;}
+.cesi_bottom .topxz{ height:2.2rem; line-height:2.2rem; font-size:0.7rem; border-bottom:solid 1px #efefef; background:url(../../images/ico9.png) no-repeat right;}
+.cesi_bottom .topxz .right input{ text-align:right; border:0px; background:none; margin-right:0.7rem; width:4rem;}
+
+.datibox{background:#fff; padding:0 12% 0.9rem 12%;}
+.datibox_top p{ color:#999; font-size:0.65rem; text-align:right; line-height:1.4rem; margin-top:1rem;}
+.datibox_top p span{ font-size:0.9rem; color:#3bc8ac;}
+.datibox_top .jindu{ height:0.3rem;border-radius: 0.3rem; width:100%; background:#e2e2e2; overflow:hidden; margin-bottom:1rem;}
+.datibox_top .jindutiao{ height:0.3rem; background:#3bc8ac; }
+.datibox dl dt{ line-height:2.5rem; font-size:0.8rem;}
+.datibox dl dd{ line-height:2rem; float:left; width:100%;}
+.datibox dl dd .left{ font-size:0.75rem; color:#666;}
+.datibox dl dd label{ display: block; float:right; overflow:hidden;height:2rem; position:relative;}
+.datibox dl dd label input{ position: absolute; top:-100rem;-webkit-appearance:radio;}
+.datibox dl dd label i{display: inline-block;width:0.95rem; height:0.95rem; background: url(../../images/radio.png) no-repeat; vertical-align: middle; position:relative; top:-0.1rem;}
+.datibox dl dd label input:checked+i{ background: url(../../images/radio_check.png) no-repeat; }
+
+.datibox .anniu{ float:left; margin-top:5rem; width:100%;}
+.datibox .anniu input{ width:41%; margin-left:6%; float:left;}

@@ -1,0 +1,104 @@
+@charset "utf-8";
+/* CSS Document */
+.registerList li{ border-bottom:solid 1px #efefef; line-height:2.2rem; font-size:0.7rem;}
+.registerList li .left{ width:26%; text-indent:1rem;height:2.2rem; overflow:hidden; color:#333;}
+.registerList li .left1{ width:2.3rem; height:2.2rem; overflow:hidden; float:left; color:#333;}
+.registerList li .right{ margin-right:1rem; overflow:hidden; float:right;}
+.registerList li .lineheight{ line-height:1rem; padding-top:0.6rem; margin-bottom:0.5rem;}
+.registerList li .right img{ margin-top:.8rem;}
+.registerList li input{ float:left; background:none; border:0px; height:2.2rem; width:72%; padding-left:2%; font-size:0.7rem;}
+.registerList li .input1{ text-align:right; float:right; margin-right: 0.8rem;}
+.registerList li .input2{text-align:right;margin-right: 1rem; width: 62%;float: right;}
+.registerList li input.text1{ width:30%;}
+.registerList li input.button{ width:30%; text-align:center; float:right; font-size:0.7rem; color:#f3892d;}
+.registerList li textarea{ float:left; background:none; border:0px; height:5rem; width:72%; padding-left:2%;font-size:0.7rem; line-height:1rem; padding-top:0.6rem;}
+.registerList li .xian{ height:0.9rem; float:right; width:1px; background:#efefef; margin:0.65rem 0px;}
+.registerList li.jiantou{ background:url(../../images/ico3.png) no-repeat right;}
+.registerList li.liborder{ border-bottom:0px; color:#999; font-size:0.6rem;}
+.registerList li.liborder .checkbox{ width:0.9rem; height:0.9rem; -webkit-appearance: checkbox; margin:0.6rem 0.2rem 0.6rem 1rem;}
+.registerList li.liborder span{margin:0.6rem 0.2rem 0.6rem 1rem;color:#f3892d;}
+.registerList li.liborder a{color:#3bc8ac; }
+.registerList li span.ages{ padding:0 .3rem; float:left;}
+.registerList li .kuang{float:left; background:none; border:0px; height:2.2rem; width:72%; padding-left:2%; font-size:0.7rem;}
+.registerList li .pic{float: right; margin-right: 0.8rem;margin-bottom: 0.9rem;}
+
+.labelinput{ overflow:hidden;height:2rem; position:relative;}
+.labelinput input{ position: absolute; top:-100rem;-webkit-appearance:radio;}
+.labelinput i{display: inline-block;width:0.95rem; height:0.95rem; background: url(../../images/radio.png) no-repeat; vertical-align: middle; position:relative; top:-0.1rem;}
+.labelinput input:checked+i{ background: url(../../images/radio_check.png) no-repeat; }
+
+.gerenzl{ padding:1rem 4%; text-align:center;border-bottom:solid 1px #efefef; font-size:0.7rem; line-height:1.2rem;}
+.gerenzl dt{ width:3rem; height:3rem; margin:0 auto;}
+.gerenzl dt img{ width:100%; height:100%; border-radius:50%;}
+
+.alertbox{ width:100%; height:100%; background:#000; position:absolute; left:0px; top:0px;z-index: 111;opacity: 0.5;}
+.alertdl{ background:#fff; position:absolute; left:0px; bottom:-1px; z-index:1111; width:100%;}
+.alertdl dt{ border-bottom:solid 1px #efefef; text-align:center; font-size:0.8rem; height:2.25rem; line-height:2.25rem; padding:0 4%;}
+.alertdl dd{ height:2.25rem;font-size:0.8rem; line-height:2.25rem; border-bottom:solid 1px #efefef; padding:0 4%;}
+.alertdl dd .button1{ float:left; width:50%;height:2.25rem; border:0px; background:#fff; color:#333;}
+.alertdl dd .button2{ float:left; width:49%;height:2.25rem; border:0px; background:#fff; color:#3bc8ac; border-left:solid 1px #efefef;}
+
+.xgmz li{ border-bottom:solid 1px #efefef; line-height:2.2rem; font-size:0.7rem; height:2.2rem; padding:0 4%;}
+.xgmz li em{ background:url(../../images/dui.png) no-repeat; width:0.65rem; height:0.5rem; display:none; margin-top:0.85rem;}
+.xgmz li.on{color:#f3892d;}
+.xgmz li.on em{ display:block; }
+
+.cesi_top{ background:#fff; padding:0 4% 0.9rem 4%;}
+.cesi_top .cesifen{ text-align:center; margin-top:1rem; float:left; width:100%;margin-bottom: 0.5rem;}
+.cesi_top .cesifen span{ color:#f3892d; font-size:1.25rem; font-weight:bold;}
+.cesi_top .cesifen p{ color:#333; font-size:0.8rem; margin-top:0.2rem;}
+.cesi_top dl dt{ height:2.4rem; display:block; width:100%; float:left; line-height:2.4rem; color:#666; font-size:0.7rem; text-indent:1.4rem;}
+.cesi_top dl dt.em1{ background:url(../../images/ico7.png) no-repeat 0px;}
+.cesi_top dl dt.em2{ background:url(../../images/ico8.png) no-repeat 0px;}
+.cesi_top dd{ font-size:0.65rem; line-height:1rem; color:#666;}
+
+.cesi_bottom{ background:#fff; padding:0 4% 0.9rem 4%; margin-top:0.5rem;}
+.cesi_bottom .topxz{ height:2.2rem; line-height:2.2rem; font-size:0.8rem; text-align:center;}
+
+.plglsousuo{ width:92%; margin:0.625rem auto; height:1.5rem;border-radius:1.5rem; background:#f5f5f5 url(../../images/ico16.png) no-repeat 0.4rem;}
+.plglsousuo input{ margin-left:1.6rem; height:1.5rem; border:0px; background:none; line-height:1.5rem; font-size:0.6rem; width: 85%;}
+.rwglul li{ padding:0.6rem 4%; border-bottom:solid 1px #efefef; position:relative;background: #fff;}
+.rwglul li.bor0{ border:0px;}
+.rwglul li p{ width:100%; float:left; line-height:1.3rem;}
+.rwglul li p.p1{ font-size:0.75rem;}
+.rwglul li p.p2{ font-size:0.6rem; color:#999;}
+.rwglul li p.p3{ font-size:0.7rem; color:#666;}
+.rwglul li .ys{ color:#3bc8ac;}
+.rwglul li .ys1{ color:#999;}
+.rwglul li .ys2{ color:#f3892d;}
+.rwglul li .ys3{ color:#666;}
+.rwglul li .ckjg{ width:4.1rem; border:solid 1px #50ccb2; text-align:center; height:1.25rem; line-height:1.25rem; font-size:0.75rem; color:#50ccb2; display:block; margin-top:-0.1rem;border-radius: 1.25rem;}
+.rwglul li .sqcc{ width:4.1rem; border:solid 1px #fa822a; text-align:center; height:1.25rem; line-height:1.25rem; font-size:0.75rem; color:#fa822a; display:block; margin-top:-0.1rem;border-radius: 1.25rem;}
+.rwglul .labelinput{ float:right; margin-top:-2rem;}
+.rwglul_top{ height:1.65rem; line-height:1.65rem; padding:0 4%; font-size:0.65rem;} 
+
+.xianshigd{ text-align:center; font-size:0.6rem; color:#999; margin:1rem 0;}
+
+.jfgztxt{ width:92%; margin:0.625rem auto;}
+.jfgztxt p{ color:#999; font-size:0.6rem; line-height:0.9rem;}
+
+.rwgltext{width:92%; margin:0rem auto 1rem auto;}
+.rwgltext dl dt{ height:2rem; display:block; width:100%; float:left; line-height:2rem; color:#333; font-size:0.8rem;}
+.rwgltext dd{ font-size:0.7rem; line-height:1rem; color:#666;}
+.rwgltext dd span{ color:#fa822a; margin-right:1.5rem;}
+
+.table1 {border-collapse: collapse; width:94%; margin:0 auto;font-size:0.6rem;}
+.table1,.table1 td{border: 1px solid #00c900; text-align:center;}
+.table1 tr{ height:0.5rem;}
+.table1 th{ background:#00c900;color:#fff;}
+
+.grzx_top{ width:100%; height:2.5rem;border-radius:0 0 3rem 3rem; background:#3bc8ac; float:left; margin-bottom:5.4rem;}
+.grzx_txbox{ width:94%; height:6.9rem;border-radius:0.3rem; background:#fff; margin:0.5rem auto;box-shadow:2px 2px 6px #cff4ed; position:relative; overflow:hidden;}
+.grzx_txbox .grbg{ position:absolute; bottom:0px; left:0px;}
+.grzx_txbox dl{ height:3rem; padding:1rem 8%; background:url(../../images/ico9.png) 92% no-repeat;}
+.grzx_txbox  dt{ width:3rem; float:left; overflow:hidden; height:3rem; margin-right:0.5rem;}
+.grzx_txbox  dt img{border-radius: 50%;}
+.grzx_txbox  dd div{ height:1.5rem; line-height:1.5rem;}
+.grzx_txbox  dd .wz1{ color:#333; font-size:1rem;}
+.grzx_txbox  dd .wz2{ color:#666; font-size:0.7rem;}
+
+.grzxul li{border-bottom:solid 1px #efefef;line-height:2.2rem; font-size:0.7rem; height:2.2rem; padding:0 4%;}
+.grzxul li a{ display:block; color:#666;}
+.grzxul li img{ float:left; margin-right:0.3rem; margin-top:0.575rem;}
+
+

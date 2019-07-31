@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ambition.agile.modules.course.dao.CoursePermissionsDao">
+    
+	<sql id="coursePermissionsColumns">
+		a.id AS "id",
+		a.course_id AS "courseId",
+		a.create_by AS "createBy.id",
+		a.update_date AS "updateDate",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.del_flag AS "delFlag",
+		a.org_id AS "orgId",
+		c.name AS "course.name",
+		c.id AS "course.id",
+		s.name AS "org.name",
+		s.id AS "org.id"
+	</sql>
+	
+	<sql id="coursePermissionsJoins">
+		LEFT JOIN course c ON c.id = a.course_id
+		LEFT JOIN sys_office s ON s.id = a.org_id
+	</sql>
+    
+	<select id="get" resultType="CoursePermissions">
+		SELECT 
+			<include refid="coursePermissionsColumns"/>
+		FROM course_permissions a
+		<include refid="coursePermissionsJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CoursePermissions">
+		SELECT 
+			<include refid="coursePermissionsColumns"/>
+		FROM course_permissions a
+		<include refid="coursePermissionsJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="orgId != null">
+				AND  a.org_id = #{orgId} 
+			</if>
+			<if test="courseId != null">
+				AND  a.course_id = #{courseId} 
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CoursePermissions">
+		SELECT 
+			<include refid="coursePermissionsColumns"/>
+		FROM course_permissions a
+		<include refid="coursePermissionsJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO course_permissions(
+			org_id,
+			course_id,
+			create_by,
+			create_date,
+			del_flag
+		) VALUES (
+			#{orgId},
+			#{courseId},
+			#{createBy.id},
+			#{createDate},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE course_permissions SET
+			org_id = #{orgId},
+			course_id = #{courseId},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE course_permissions SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

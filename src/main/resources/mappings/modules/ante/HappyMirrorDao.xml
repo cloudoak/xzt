@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ambition.agile.modules.ante.dao.HappyMirrorDao">
+    
+	<sql id="happyMirrorColumns">
+		a.id AS "id",
+		a.test_name AS "testName",
+		a.test_id_type AS "testIdType",
+		a.test_score AS "testScore",
+		a.create_date AS "createDate",
+		a.create_by AS "createBy.id",
+		a.update_date AS "updateDate",
+		a.update_by AS "updateBy.id",
+		a.del_flag AS "delFlag",
+		a.org_id AS "orgId"
+	</sql>
+	
+	<sql id="happyMirrorJoins">
+	</sql>
+    
+	<select id="get" resultType="HappyMirror">
+		SELECT 
+			<include refid="happyMirrorColumns"/>
+		FROM happy_mirror a
+		<include refid="happyMirrorJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="HappyMirror">
+		SELECT 
+			<include refid="happyMirrorColumns"/>
+		FROM happy_mirror a
+		<include refid="happyMirrorJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="HappyMirror">
+		SELECT 
+			<include refid="happyMirrorColumns"/>
+		FROM happy_mirror a
+		<include refid="happyMirrorJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO happy_mirror(
+			id,
+			test_name,
+			test_id_type,
+			test_score,
+			create_date,
+			create_by,
+			update_date,
+			update_by,
+			del_flag,
+			org_id
+		) VALUES (
+			#{id},
+			#{testName},
+			#{testIdType},
+			#{testScore},
+			#{createDate},
+			#{createBy.id},
+			#{updateDate},
+			#{updateBy.id},
+			#{delFlag},
+			#{orgId}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE happy_mirror SET 	
+			test_name = #{testName},
+			test_id_type = #{testIdType},
+			test_score = #{testScore},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id},
+			org_id = #{orgId}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE happy_mirror SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

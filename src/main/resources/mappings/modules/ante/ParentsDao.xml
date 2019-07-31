@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ambition.agile.modules.ante.dao.ParentsDao">
+    
+	<sql id="parentsColumns">
+		a.id AS "id",
+		a.parent_no AS "parentNo",
+		a.account AS "account",
+		a.password AS "password",
+		a.name AS "name",
+		a.gender AS "gender",
+		<!-- a.age AS "age", -->
+		(year(now())-year(a.birthday)-1) + ( DATE_FORMAT(a.birthday, '%m%d') &lt;= DATE_FORMAT(NOW(), '%m%d') ) as age,
+		a.nation_id AS "nationId",
+		a.birthday AS "birthday",
+		a.email AS "email",
+		a.phone AS "phone",
+		a.household_income AS "householdIncome",
+		a.household_total AS "householdTotal",
+		a.household_bs_total AS "householdBsTotal",
+		a.is_lwyp AS "isLwyp",
+		a.last_login_time AS "lastLoginTime",
+		a.login_count AS "loginCount",
+		a.is_check AS "isCheck",
+		a.student_code AS "studentCode",
+		a.state AS "state",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.org_id AS "orgId",
+		a.del_flag AS "delFlag",
+		a.reason AS "reason",
+		a.user_id AS "userId",
+		u1.name AS "parentName",
+		<!-- 家属组织用户信息 -->
+		oo.id AS "org.id",
+		oo.name AS "org.name",
+		u1.id AS "user.id",
+		u1.name AS "user.name",
+		u1.login_name AS "user.loginName",
+		<!-- 来访者信息 -->
+		v.visitor_no AS "visitorInfo.visitorNo",
+		v.sex AS "visitorInfo.sex",
+		v.nation AS "visitorInfo.nation",
+		v.birthday AS "visitorInfo.birthday",
+		(year(now())-year(a.birthday)-1) + ( DATE_FORMAT(v.birthday, '%m%d') &lt;= DATE_FORMAT(NOW(), '%m%d') ) AS "visitorInfo.age",
+		v.native_place AS "visitorInfo.nativePlace",
+		v.phone_num AS "visitorInfo.phoneNum",
+		v.email AS "visitorInfo.email",
+		v.address AS "visitorInfo.address",
+		v.is_city AS "visitorInfo.isCity",
+		v.is_boarder AS "visitorInfo.isBoarder",
+		v.is_student_cadre AS "visitorInfo.isStudentCadre",
+		v.hobby AS "visitorInfo.hobby",
+		v.speciality AS "visitorInfo.speciality",
+		v.childhood_experience AS "visitorInfo.childhoodExperience",
+		v.physical_conditions AS "visitorInfo.physicalConditions",
+		v.academic_conditions AS "visitorInfo.academicConditions",
+		v.rewards_conditions AS "visitorInfo.rewardsConditions",
+		v.self_assessment AS "visitorInfo.selfAssessment",
+		v.is_single_parent AS "visitorInfo.isSingleParent",
+		v.is_lwyp AS "visitorInfo.isLwyp",
+		v.family_constellation AS "visitorInfo.familyConstellation",
+		v.father_name AS "visitorInfo.fatherName",
+		v.father_age AS "visitorInfo.fatherAge",
+		v.father_phone AS "visitorInfo.fatherPhone",
+		v.father_education AS "visitorInfo.fatherEducation",
+		v.father_duty AS "visitorInfo.fatherDuty",
+		v.father_job AS "visitorInfo.fatherJob",
+		v.mother_name AS "visitorInfo.motherName",
+		v.mother_age AS "visitorInfo.motherAge",
+		v.mother_phone AS "visitorInfo.motherPhone",
+		v.mother_education AS "visitorInfo.motherEducation",
+		v.mother_duty AS "visitorInfo.motherDuty",
+		v.mother_job AS "visitorInfo.motherJob",
+		v.is_family_history AS "visitorInfo.isFamilyHistory",
+		v.family_history AS "visitorInfo.familyHistory",
+		v.family_relationship AS "visitorInfo.familyRelationship",
+		v.family_information AS "visitorInfo.familyInformation",
+		v.is_poverty AS "visitorInfo.isPoverty",
+		v.household_income AS "visitorInfo.householdIncome",
+		v.household_bs_total AS "visitorInfo.householdBsTotal",
+		v.household_total AS "visitorInfo.householdTotal",
+		v.remarks AS "visitorInfo.remarks",
+		o.id AS "visitorInfo.org.id",
+		o.name AS "visitorInfo.org.name",
+		uv.id AS "visitorInfo.user.id",
+		uv.name AS "visitorInfo.user.name",
+		uv.login_name AS "visitorInfo.user.loginName"
+	</sql>
+	
+	<sql id="parentsJoins">
+		LEFT JOIN visitor_info v ON v.visitor_no = a.student_code
+		LEFT JOIN sys_user uv ON uv.id = v.user_id
+		LEFT JOIN sys_office o ON o.id = v.org_id
+		LEFT JOIN sys_user u1 ON u1.id = a.user_id
+		LEFT JOIN sys_office oo ON oo.id = a.org_id
+	</sql>
+    
+	<select id="get" resultType="Parents">
+		SELECT 
+			<include refid="parentsColumns"/>
+		FROM parents a
+		<include refid="parentsJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	
+	<select id="getUserByUserId" resultType="Parents">
+		SELECT 
+			<include refid="parentsColumns"/>
+		FROM parents a
+		<include refid="parentsJoins"/>
+		WHERE a.user_id = #{userId}
+	</select>
+	
+	<select id="findList" resultType="Parents">
+		SELECT 
+			<include refid="parentsColumns"/>
+		FROM parents a
+		<include refid="parentsJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="parentNo != null and parentNo != ''">
+				AND a.parent_no = #{parentNo}
+			</if>
+			<if test="account != null and account != ''">
+				AND a.account = #{account}
+			</if>
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="studentCode != null and studentCode != ''">
+				AND a.student_code = #{studentCode}
+			</if>
+			<if test="visitorInfo != null and visitorInfo.user.name != null and visitorInfo.user.name != ''">
+				AND v.realName LIKE 
+					<if test="dbName == 'oracle'">'%'||#{visitorInfo.user.name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{visitorInfo.user.name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{visitorInfo.user.name},'%')</if>
+			</if>
+			<if test="state != null">
+				AND a.state = #{state}
+			</if>
+			<if test="organization !=null  and organization != ''">
+				AND a.org_id IN(${organization})
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Parents">
+		SELECT 
+			<include refid="parentsColumns"/>
+		FROM parents a
+		<include refid="parentsJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findNewList" resultType="ParentsVo">
+		SELECT 
+			<include refid="parentsColumns"/>,
+			c.name AS "orgName" 
+		FROM parents a 
+		LEFT JOIN sys_office c ON a.org_id = c.id 
+		<include refid="parentsJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="parentNo != null and parentNo != ''">
+				AND a.parent_no = #{parentNo}
+			</if>
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="studentCode != null and studentCode != ''">
+				AND a.student_code = #{studentCode}
+			</if>
+			<if test="state != null">
+				AND a.state = #{state}
+			</if>
+			<if test="organization !=null  and organization != ''">
+				AND a.org_id IN(${organization})
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="getParent" resultType="ParentsVo">
+		SELECT 
+			<include refid="parentsColumns"/>
+		FROM parents a 
+			<include refid="parentsJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO parents(
+			parent_no,
+			account,
+			password,
+			name,
+			gender,
+			age,
+			nation_id,
+			birthday,
+			email,
+			phone,
+			household_income,
+			household_total,
+			household_bs_total,
+			is_lwyp,
+			last_login_time,
+			login_count,
+			is_check,
+			student_code,
+			state,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			org_id,
+			del_flag,
+			reason,
+			user_id
+		) VALUES (
+			#{parentNo},
+			#{account},
+			#{password},
+			#{name},
+			#{gender},
+			#{age},
+			#{nationId},
+			#{birthday},
+			#{email},
+			#{phone},
+			#{householdIncome},
+			#{householdTotal},
+			#{householdBsTotal},
+			#{isLwyp},
+			#{lastLoginTime},
+			#{loginCount},
+			#{isCheck},
+			#{studentCode},
+			#{state},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{orgId},
+			#{delFlag},
+			#{reason},
+			#{userId}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE parents SET 	
+			parent_no = #{parentNo},
+			account = #{account},
+			password = #{password},
+			name = #{name},
+			gender = #{gender},
+			age = #{age},
+			nation_id = #{nationId},
+			birthday = #{birthday},
+			email = #{email},
+			phone = #{phone},
+			household_income = #{householdIncome},
+			household_total = #{householdTotal},
+			household_bs_total = #{householdBsTotal},
+			is_lwyp = #{isLwyp},
+			last_login_time = #{lastLoginTime},
+			login_count = #{loginCount},
+			is_check = #{isCheck},
+			student_code = #{studentCode},
+			state = #{state},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			org_id = #{orgId},
+			del_flag = #{delFlag},
+			reason = #{reason},
+			user_id = #{userId}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateIfNull">
+		UPDATE parents
+			<trim prefix="SET" suffixOverrides=",">
+			<if test="account != null and account != ''">
+			account = #{account},
+			</if>
+			<if test="password != null and password != ''">
+			password = #{password},
+			</if>
+			<if test="name != null and name != ''">
+			name = #{name},
+			</if>
+			<if test="gender != null and gender != ''">
+			gender = #{gender},
+			</if>
+			<if test="age != null and age != ''">
+			age = #{age},
+			</if>
+			<if test="nationId != null and nationId != ''">
+			nation_id = #{nationId},
+			</if>
+			<if test="birthday != null and birthday != ''">
+			birthday = #{birthday},
+			</if>
+			<if test="email != null and email != ''">
+			email = #{email},
+			</if>
+			<if test="phone != null and phone != ''">
+			phone = #{phone},
+			</if>
+			<if test="householdIncome != null and householdIncome != ''">
+			household_income = #{householdIncome},
+			</if>
+			<if test="householdTotal != null and householdTotal != ''">
+			household_total = #{householdTotal},
+			</if>
+			<if test="householdBsTotal != null and householdBsTotal != ''">
+			household_bs_total = #{householdBsTotal},
+			</if>
+			<if test="isLwyp != null and isLwyp != ''">
+			is_lwyp = #{isLwyp},
+			</if>
+			<if test="lastLoginTime != null and lastLoginTime != ''">
+			last_login_time = #{lastLoginTime},
+			</if>
+			<if test="loginCount != null and loginCount != ''">
+			login_count = #{loginCount},
+			</if>
+			<if test="isCheck != null and isCheck != ''">
+			is_check = #{isCheck},
+			</if>
+			<if test="studentCode != null and studentCode != ''">
+			student_code = #{studentCode},
+			</if>
+			<if test="state != null and state != ''">
+			state = #{state},
+			</if>
+			<if test="updateDate != null and updateDate != ''">
+			update_date = #{updateDate},
+			</if>
+			<if test="orgId != null and orgId != ''">
+			org_id = #{orgId},
+			</if>
+			<if test="delFlag != null and delFlag != ''">
+			del_flag = #{delFlag},
+			</if>
+			<if test="reason != null and reason != ''">
+			reason = #{reason},
+			</if>
+			<if test="userId != null and userId != ''">
+			user_id = #{userId},
+			</if>
+			<if test="parentNo != null and parentNo != ''">
+			parent_no = #{parentNo},
+			</if>
+			</trim>
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE parents SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

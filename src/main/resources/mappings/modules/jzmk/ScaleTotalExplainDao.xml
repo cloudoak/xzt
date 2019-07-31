@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ambition.agile.modules.jzmk.dao.ScaleTotalExplainDao">
+    
+	<sql id="scaleTotalExplainColumns">
+		a.id AS "id",
+		a.min_value AS "minValue",
+		a.max_value AS "maxValue",
+		a.explain_content AS "explainContent",
+		a.tid AS "tid",
+		a.score_type AS "scoreType",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.org_id AS "orgId",
+		a.del_flag AS "delFlag",
+		s.name AS "tName"
+	</sql>
+	
+	<sql id="scaleTotalExplainJoins">
+	</sql>
+    
+	<select id="get" resultType="ScaleTotalExplain">
+		SELECT 
+			<include refid="scaleTotalExplainColumns"/>
+		FROM scale_total_explain a
+		left join scale s on a.tid=s.id
+		<include refid="scaleTotalExplainJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ScaleTotalExplain">
+		SELECT 
+			<include refid="scaleTotalExplainColumns"/>
+		FROM scale_total_explain a
+		left join scale s on a.tid=s.id
+		<include refid="scaleTotalExplainJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="tid != null and tid != ''">
+				AND a.tid = #{tid}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ScaleTotalExplain">
+		SELECT 
+			<include refid="scaleTotalExplainColumns"/>
+		FROM scale_total_explain a
+		left join scale s on a.tid=s.id
+		<include refid="scaleTotalExplainJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO scale_total_explain(
+			min_value,
+			max_value,
+			explain_content,
+			tid,
+			score_type,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			org_id,
+			del_flag
+		) VALUES (
+			#{minValue},
+			#{maxValue},
+			#{explainContent},
+			#{tid},
+			#{scoreType},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{orgId},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE scale_total_explain SET 	
+			min_value = #{minValue},
+			max_value = #{maxValue},
+			explain_content = #{explainContent},
+			tid = #{tid},
+			score_type = #{scoreType},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			org_id = #{orgId},
+			del_flag = #{delFlag}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE scale_total_explain SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

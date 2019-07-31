@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ambition.agile.modules.counsel.dao.ScheduleDayDao">
+    
+	<sql id="scheduleDayColumns">
+		a.id AS "id",
+		a.day AS "day",
+		a.org_id AS "orgId",
+		a.creator_id AS "creatorId",
+		a.create_time AS "createTime"
+	</sql>
+	
+	<sql id="scheduleDayJoins">
+	</sql>
+    
+	<select id="get" resultType="ScheduleDay">
+		SELECT 
+			<include refid="scheduleDayColumns"/>
+		FROM schedule_day a
+		<include refid="scheduleDayJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ScheduleDay">
+		SELECT 
+			<include refid="scheduleDayColumns"/>
+		FROM schedule_day a
+		<include refid="scheduleDayJoins"/>
+		<where>
+			
+			<if test="day != null and day != ''">
+				AND a.day = #{day}
+			</if>
+			<if test="orgId != null and orgId != ''">
+				AND a.org_id = #{orgId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ScheduleDay">
+		SELECT 
+			<include refid="scheduleDayColumns"/>
+		FROM schedule_day a
+		<include refid="scheduleDayJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO schedule_day(
+			day,
+			org_id,
+			creator_id,
+			create_time
+		) VALUES (
+			#{day},
+			#{orgId},
+			#{creatorId},
+			#{createTime}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE schedule_day SET 	
+			day = #{day},
+			org_id = #{orgId}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM schedule_day
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

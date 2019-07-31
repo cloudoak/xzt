@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ambition.agile.modules.jzmk.dao.ScaleAslecDao">
+    
+	<sql id="scaleAslecColumns">
+		a.id AS "id",
+		a.question AS "question",
+		a.explain AS "explain"
+	</sql>
+	
+	<sql id="scaleAslecJoins">
+	</sql>
+    
+	<select id="get" resultType="ScaleAslec">
+		SELECT 
+			<include refid="scaleAslecColumns"/>
+		FROM scale_aslec a
+		<include refid="scaleAslecJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ScaleAslec">
+		SELECT 
+			<include refid="scaleAslecColumns"/>
+		FROM scale_aslec a
+		<include refid="scaleAslecJoins"/>
+		<where>
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="question != null and question != ''">
+				AND a.question = #{question}
+			</if>
+			<if test="explain != null and explain != ''">
+				AND a.explain = #{explain}
+			</if>
+			<if test="idList != null and idList != ''">
+				AND a.id IN (${idList})
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ScaleAslec">
+		SELECT 
+			<include refid="scaleAslecColumns"/>
+		FROM scale_aslec a
+		<include refid="scaleAslecJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO scale_aslec(
+			id,
+			question,
+			explain
+		) VALUES (
+			#{id},
+			#{question},
+			#{explain}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE scale_aslec SET 	
+			question = #{question},
+			explain = #{explain}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM scale_aslec
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

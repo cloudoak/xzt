@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ambition.agile.modules.jzmk.dao.ScaleCheckResultDao">
+    
+	<sql id="scaleCheckResultColumns">
+		a.id AS "id",
+		a.task_id AS "taskId",
+		a.task_user_id AS "taskUserId",
+		a.task_scale_id AS "taskScaleId",
+		a.guidance AS "guidance",
+		a.result_explain AS "resultExplain",
+		a.answer_start_time AS "answerStartTime",
+		a.answer_end_time AS "answerEndTime",
+		a.task_number AS "taskNumber",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.org_id AS "orgId",
+		a.del_flag AS "delFlag",
+		s.name AS "scaleName",
+		u.state AS "state",
+		u.user_sex AS "userSex",
+		u.user_age AS "userAge",
+		t.batch_number AS "batchNumber",
+		su.login_name AS "userLoginName",
+		su.name AS "userName",
+		su.user_type AS "userType"  
+	</sql>
+	
+	<sql id="scaleCheckResultJoins">
+	</sql>
+    
+	<select id="get" resultType="ScaleCheckResult">
+		SELECT 
+			<include refid="scaleCheckResultColumns"/>
+		FROM scale_check_result a
+		<include refid="scaleCheckResultJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getScaleCheckResult" resultType="ScaleCheckResult">
+		SELECT 
+			a.id AS "id",
+			a.task_id AS "taskId",
+			a.task_user_id AS "taskUserId",
+			a.task_scale_id AS "taskScaleId",
+			a.guidance AS "guidance",
+			a.result_explain AS "resultExplain",
+			a.answer_start_time AS "answerStartTime",
+			a.answer_end_time AS "answerEndTime",
+			a.create_by AS "createBy.id",
+			a.create_date AS "createDate",
+			a.update_by AS "updateBy.id",
+			a.update_date AS "updateDate",
+			a.org_id AS "orgId",
+			a.del_flag AS "delFlag" 
+			FROM scale_check_result a
+		<include refid="scaleCheckResultJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="taskId != null and taskId != ''">
+				AND a.task_id = #{taskId}
+			</if>
+			<if test="taskUserId != null and taskUserId != ''">
+				AND a.task_user_id = #{taskUserId}
+			</if>
+			<if test="taskScaleId != null and taskScaleId != ''">
+				AND a.task_scale_id = #{taskScaleId}
+			</if>
+			<if test="taskNumber != null and taskNumber != ''">
+				AND a.task_number = #{taskNumber}
+			</if>
+			<if test="orgId != null and orgId != ''">
+				AND a.org_id = #{orgId}
+			</if>
+			<if test="organization !=null  and organization != ''">
+				AND a.org_id IN(${organization})
+			</if>
+		</where>
+	</select>
+	
+	<select id="findList" resultType="ScaleCheckResult">
+		SELECT 
+			<include refid="scaleCheckResultColumns"/>
+		FROM scale_check_result a 
+		left join scale s on s.id=a.task_scale_id 
+		left join scale_task_user u on u.user_id=a.task_user_id and u.task_number=a.task_number 
+		left join scale_check_task t on t.id = a.task_id 
+		left join sys_user su on su.id = a.task_user_id 
+		left join gene g on a.task_scale_id = g.tid
+		<include refid="scaleCheckResultJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="taskId != null and taskId != ''">
+				AND a.task_id = #{taskId}
+			</if>
+			<if test="taskUserId != null and taskUserId != ''">
+				AND a.task_user_id = #{taskUserId}
+			</if>
+			<if test="taskScaleId != null and taskScaleId != ''">
+				AND a.task_scale_id = #{taskScaleId}
+			</if>
+			<if test="geneId != null and geneId != ''">
+				AND g.id = #{geneId}
+			</if>
+			<if test="taskNumber != null and taskNumber != ''">
+				AND a.task_number = #{taskNumber}
+			</if>
+			<if test="orgId != null and orgId != ''">
+				AND a.org_id = #{orgId}
+			</if>
+			<if test="organization !=null  and organization != ''">
+				AND a.org_id IN(${organization})
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ScaleCheckResult">
+		SELECT 
+			<include refid="scaleCheckResultColumns"/>
+		FROM scale_check_result a 
+		left join scale s on s.id=a.task_scale_id 
+		left join scale_task_user u on u.user_id=a.task_user_id and u.task_id=a.task_id 
+		left join scale_check_task t on t.id = a.task_id 
+		<include refid="scaleCheckResultJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="orgId != null and orgId != ''">
+				AND a.org_id = #{orgId}
+			</if>
+			<if test="organization !=null  and organization != ''">
+				AND a.org_id IN(${organization})
+			</if>
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findExportList" resultType="ScaleCheckResult">
+		SELECT 
+			a.id AS "id",
+			a.task_id AS "taskId",
+			a.task_user_id AS "taskUserId",
+			a.task_scale_id AS "taskScaleId",
+			a.guidance AS "guidance",
+			a.result_explain AS "resultExplain",
+			a.answer_start_time AS "answerStartTime",
+			a.answer_end_time AS "answerEndTime",
+			a.create_by AS "createBy.id",
+			a.create_date AS "createDate",
+			a.update_by AS "updateBy.id",
+			a.update_date AS "updateDate",
+			a.org_id AS "orgId",
+			a.del_flag AS "delFlag",
+			s.name AS "scaleName",
+			u.state AS "state",
+			u.user_name AS "userName",
+			u.user_login_name AS "userLoginName",
+			t.batch_number AS "batchNumber",
+			g.name AS "geneName",
+			g.standard_value AS "standardValue",
+			sc.score AS "originalScore",
+			sc.score2 AS "geneScore" 
+		FROM scale_check_result a 
+		left join scale s on s.id=a.task_scale_id 
+		left join scale_task_user u on u.user_id=a.task_user_id and u.task_number=a.task_number 
+		left join scale_check_task t on t.id = a.task_id 
+		left join gene g on g.tid = a.task_scale_id 
+		left join scale_check_score sc on sc.task_number = a.task_number and sc.gid = g.number 
+		<include refid="scaleCheckResultJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="taskId != null and taskId != ''">
+				AND a.task_id = #{taskId}
+			</if>
+			<if test="taskUserId != null and taskUserId != ''">
+				AND a.task_user_id = #{taskUserId}
+			</if>
+			<if test="taskScaleId != null and taskScaleId != ''">
+				AND a.task_scale_id = #{taskScaleId}
+			</if>
+			<if test="orgId != null and orgId != ''">
+				AND a.org_id = #{orgId}
+			</if>
+			<if test="organization !=null  and organization != ''">
+				AND a.org_id IN(${organization})
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findScoreList" resultType="ScaleCheckResult">
+		SELECT 
+			a.id AS "id",
+			a.task_id AS "taskId",
+			a.task_user_id AS "taskUserId",
+			a.task_scale_id AS "taskScaleId",
+			a.answer_start_time AS "answerStartTime",
+			a.answer_end_time AS "answerEndTime",
+			sc.score AS "originalScore",
+			sc.score2 AS "geneScore" 
+		    FROM scale_check_result a 
+		    left join sys_user u on u.id = a.task_user_id 
+		    left join scale_check_score sc on sc.task_number = a.task_number
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="taskId != null and taskId != ''">
+				AND a.task_id = #{taskId}
+			</if>
+			<if test="taskUserId != null and taskUserId != ''">
+				AND a.task_user_id = #{taskUserId}
+			</if>
+			<if test="taskScaleId != null and taskScaleId != ''">
+				AND a.task_scale_id = #{taskScaleId}
+			</if>
+			<if test="areaCode != null and areaCode != ''">
+				AND u.area_code = #{areaCode} 
+			</if>
+			<if test="answerStartTime != null and answerStartTime != ''">
+				AND UNIX_TIMESTAMP(a.answer_end_time) &gt; UNIX_TIMESTAMP(#{answerStartTime}) 
+			</if>
+			<if test="answerEndTime != null and answerEndTime != ''">
+				AND UNIX_TIMESTAMP(a.answer_end_time) &lt; (UNIX_TIMESTAMP(#{answerEndTime})+24*3600)  
+			</if>
+			<if test="orgId != null and orgId != ''">
+				AND a.org_id = #{orgId}
+			</if>
+			<if test="organization !=null and organization != ''">
+				AND a.org_id IN(${organization})
+			</if>
+		</where>
+			<!-- <if test="answerStartTime != null and answerStartTime != ''">
+				GROUP BY DATE_FORMAT(a.answer_end_time, '%Y-%m-%d')
+			</if> -->
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO scale_check_result(
+			task_id,
+			task_number,
+			task_user_id,
+			task_scale_id,
+			guidance,
+			result_explain,
+			answer_start_time,
+			answer_end_time,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			org_id,
+			del_flag
+		) VALUES (
+			#{taskId},
+			#{taskNumber},
+			#{taskUserId},
+			#{taskScaleId},
+			#{guidance},
+			#{resultExplain},
+			#{answerStartTime},
+			#{answerEndTime},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{orgId},
+			#{delFlag}
+		)
+		<selectKey resultType="Integer" order="AFTER" keyProperty="Id">
+            SELECT LAST_INSERT_ID() AS Id
+        </selectKey>
+	</insert>
+	
+	<update id="update">
+		UPDATE scale_check_result SET 	
+		    task_id = #{taskId},
+			task_user_id = #{taskUserId},
+			task_scale_id = #{taskScaleId},
+			guidance = #{guidance},
+			result_explain = #{resultExplain},
+			answer_start_time = #{answerStartTime},
+			answer_end_time = #{answerEndTime},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			org_id = #{orgId},
+			del_flag = #{delFlag}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE scale_check_result SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

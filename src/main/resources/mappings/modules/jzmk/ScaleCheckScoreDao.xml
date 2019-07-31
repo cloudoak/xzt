@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ambition.agile.modules.jzmk.dao.ScaleCheckScoreDao">
+    
+	<sql id="scaleCheckScoreColumns">
+		a.id AS "id",
+		a.rid AS "rid",
+		a.task_number AS "taskNumber",
+		a.gid AS "gid",
+		a.score AS "score",
+		a.score2 AS "score2",
+		a.abnormal AS "abnormal",
+		a.condition_value AS "conditionValue",
+		a.org_id AS "orgId",
+		a.del_flag AS "delFlag",
+		g.name AS "geneName",
+		g.enname AS "geneEnName",
+		s.name AS "scaleName",
+		su.name AS "userName",
+		su.login_name AS "loginName",
+		su.user_type AS "userType" 
+	</sql>
+	
+	<sql id="scaleCheckScoreJoins">
+	</sql>
+    
+	<select id="get" resultType="ScaleCheckScore">
+		SELECT 
+			<include refid="scaleCheckScoreColumns"/>
+		FROM scale_check_score a
+		<include refid="scaleCheckScoreJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ScaleCheckScore">
+		SELECT 
+			<include refid="scaleCheckScoreColumns"/>
+		FROM scale_check_score a,gene g ,scale s,sys_user su,scale_task_user tu 
+		<include refid="scaleCheckScoreJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL} 
+			AND a.gid = g.number AND a.rid = g.tid 
+			AND s.id = a.rid AND tu.task_number = a.task_number 
+			AND su.id = tu.user_id 
+			<if test="rid != null and rid != ''">
+				AND a.rid = #{rid}
+			</if>
+			<if test="taskNumber != null and taskNumber != ''">
+				AND a.task_number = #{taskNumber} 
+			</if>
+			<if test="gid != null and gid != ''">
+				AND g.id = #{gid} 
+			</if>
+			<if test="orgId != null and orgId != ''">
+				AND a.org_id = #{orgId} 
+			</if>
+			<if test="loginName != null and loginName != ''">
+				AND tu.user_login_name = #{loginName} 
+			</if>
+			<if test="abnormal != null">
+				AND a.abnormal = #{abnormal}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="getAbnormalCount" resultType="Integer">
+		select count(*) as abnormalCount FROM( 
+        SELECT 
+			count(distinct a.task_number) 
+		FROM scale_check_score a ,gene g ,scale_task_user tu 
+		<where>
+		    a.gid = g.number AND a.rid = g.tid 
+		    AND tu.task_number = a.task_number 
+		    AND a.abnormal = 1
+		<if test="rid != null and rid != ''">
+			AND a.rid = #{rid} 
+		</if>
+		<if test="gid != null and gid != ''">
+			AND g.id = #{gid} 
+		</if>
+		<if test="orgId != null and orgId != ''">
+			AND a.org_id = #{orgId} 
+		</if>
+		<if test="loginName != null and loginName != ''">
+			AND tu.user_login_name = #{loginName} 
+		</if>
+		</where>
+		GROUP BY a.task_number ) abnormal 
+	</select>
+	
+	<select id="getTotalCheckCount" resultType="Integer">
+		SELECT 
+			count(distinct a.task_number) AS totalCheckCount 
+		FROM scale_check_score a ,gene g,scale_task_user tu 
+		<where>
+			a.gid = g.number AND a.rid = g.tid 
+			AND tu.task_number = a.task_number 
+		    AND a.del_flag = #{DEL_FLAG_NORMAL} 
+		<if test="rid != null and rid != ''">
+			AND a.rid = #{rid} 
+		</if>
+		<if test="gid != null and gid != ''">
+			AND g.id = #{gid} 
+		</if>
+		<if test="orgId != null and orgId != ''">
+			AND a.org_id = #{orgId} 
+		</if>
+		<if test="loginName != null and loginName != ''">
+			AND tu.user_login_name = #{loginName} 
+		</if>
+		</where>
+	</select>
+	
+	<select id="findAllList" resultType="ScaleCheckScore">
+		SELECT 
+			<include refid="scaleCheckScoreColumns"/>
+		FROM scale_check_score a
+		<include refid="scaleCheckScoreJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO scale_check_score(
+			id,
+			rid,
+			task_number,
+			gid,
+			score,
+			score2,
+			abnormal,
+			condition_value,
+			org_id,
+			del_flag
+		) VALUES (
+			#{id},
+			#{rid},
+			#{taskNumber},
+			#{gid},
+			#{score},
+			#{score2},
+			#{abnormal},
+			#{conditionValue},
+			#{orgId},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE scale_check_score SET 	
+			rid = #{rid},
+			task_number = #{taskNumber},
+			gid = #{gid},
+			score = #{score},
+			score2 = #{score2},
+			abnormal = #{abnormal},
+			condition_value = #{conditionValue},
+			org_id = #{orgId}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE scale_check_score SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

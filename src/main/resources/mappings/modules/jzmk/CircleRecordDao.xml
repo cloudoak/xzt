@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ambition.agile.modules.jzmk.dao.CircleRecordDao">
+    
+	<sql id="circleRecordColumns">
+		a.id AS "id",
+		a.c_id AS "cId",
+		a.replier AS "replier",
+		a.replier_role AS "replierRole",
+		a.replied AS "replied",
+		a.replied_role AS "repliedRole",
+		a.content AS "content",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.org_id AS "orgId",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="circleRecordJoins">
+	</sql>
+    
+	<select id="get" resultType="CircleRecord">
+		SELECT 
+			<include refid="circleRecordColumns"/>
+		FROM circle_record a
+		<include refid="circleRecordJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CircleRecord">
+		SELECT 
+			<include refid="circleRecordColumns"/>
+		FROM circle_record a
+		<include refid="circleRecordJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="cId != null and cId != ''">
+				AND a.c_id = #{cId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CircleRecord">
+		SELECT 
+			<include refid="circleRecordColumns"/>
+		FROM circle_record a
+		<include refid="circleRecordJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO circle_record(
+			c_id,
+			replier,
+			replier_role,
+			replied,
+			replied_role,
+			content,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			org_id,
+			del_flag
+		) VALUES (
+			#{cId},
+			#{replier},
+			#{replierRole},
+			#{replied},
+			#{repliedRole},
+			#{content},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{orgId},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE circle_record SET 	
+			c_id = #{cId},
+			replier = #{replier},
+			replier_role = #{replierRole},
+			replied = #{replied},
+			replied_role = #{repliedRole},
+			content = #{content},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			org_id = #{orgId},
+			del_flag = #{delFlag}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE circle_record SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

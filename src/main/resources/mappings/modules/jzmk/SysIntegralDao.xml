@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ambition.agile.modules.jzmk.dao.SysIntegralDao">
+    
+	<sql id="sysIntegralColumns">
+		a.id AS "id",
+		a.school_name AS "schoolName",
+		a.system_title AS "systemTitle",
+		a.picture_size AS "pictureSize",
+		a.article AS "article",
+		a.check_article AS "checkArticle",
+		a.enable_integral AS "enableIntegral",
+		a.enable_anonymity_appraise AS "enableAnonymityAppraise",
+		a.enable_counsel_free AS "enableCounselFree",
+		a.enable_sms_remind AS "enableSmsRemind",
+		a.enable_counsel_voice AS "enableCounselVoice",
+		a.system_closed AS "systemClosed",
+		a.booking_days AS "bookingDays",
+		a.survey_total AS "surveyTotal",
+		a.system_prompt AS "systemPrompt",
+		a.time_mark AS "timeMark",
+		a.auth_key AS "authKey",
+		a.smtp_host AS "smtpHost",
+		a.smtp_user AS "smtpUser",
+		a.smtp_pwd AS "smtpPwd",
+		a.smtp_port AS "smtpPort",
+		a.mail_subject AS "mailSubject",
+		a.mail_content AS "mailContent",
+		a.logo AS "logo",
+		a.zycp_integral AS "zycpIntegral",
+		a.zhycp_integral AS "zhycpIntegral",
+		a.zxyy_integral AS "zxyyIntegral",
+		a.ktly_integral AS "ktlyIntegral",
+		a.zyzdxwpl_integral AS "zyzdxwplIntegral",
+		a.zgwj_integral AS "zgwjIntegral",
+		a.kjsc_integral AS "kjscIntegral",
+		a.zy_integral AS "zyIntegral",
+		a.tgzx_integral AS "tgzxIntegral",
+		a.jsdd_integral AS "jsddIntegral",
+		a.tgdd_integral AS "tgddIntegral",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.org_id AS "orgId",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="sysIntegralJoins">
+	</sql>
+    
+	<select id="get" resultType="SysIntegral">
+		SELECT 
+			<include refid="sysIntegralColumns"/>
+		FROM sys_config a
+		<include refid="sysIntegralJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findOne" resultType="SysIntegral">
+		SELECT 
+			<include refid="sysIntegralColumns"/>
+		FROM sys_config a
+		<include refid="sysIntegralJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+		LIMIT 1
+	</select>
+	
+	<select id="findList" resultType="SysIntegral">
+		SELECT 
+			<include refid="sysIntegralColumns"/>
+		FROM sys_config a
+		<include refid="sysIntegralJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			AND a.org_id = #{orgId}
+			<if test="schoolName != null and schoolName != ''">
+				AND a.school_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{schoolName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{schoolName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{schoolName},'%')</if>
+			</if>
+			<if test="systemTitle != null and systemTitle != ''">
+				AND a.system_title = #{systemTitle}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="SysIntegral">
+		SELECT 
+			<include refid="sysIntegralColumns"/>
+		FROM sys_config a
+		<include refid="sysIntegralJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			AND a.org_id = #{orgId}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO sys_config(
+			zycp_integral,
+			zhycp_integral,
+			zxyy_integral,
+			ktly_integral,
+			zyzdxwpl_integral,
+			zgwj_integral,
+			kjsc_integral,
+			zy_integral,
+			tgzx_integral,
+			jsdd_integral,
+			tgdd_integral,
+			create_by,
+			create_date,
+			org_id,
+			del_flag
+		) VALUES (
+			#{zycpIntegral},
+			#{zhycpIntegral},
+			#{zxyyIntegral},
+			#{ktlyIntegral},
+			#{zyzdxwplIntegral},
+			#{zgwjIntegral},
+			#{kjscIntegral},
+			#{zyIntegral},
+			#{tgzxIntegral},
+			#{jsddIntegral},
+			#{tgddIntegral},
+			#{createBy.id},
+			#{createDate},
+			#{orgId},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE sys_config SET 	
+			zycp_integral = #{zycpIntegral},
+			zhycp_integral = #{zhycpIntegral},
+			zxyy_integral = #{zxyyIntegral},
+			ktly_integral = #{ktlyIntegral},
+			zyzdxwpl_integral = #{zyzdxwplIntegral},
+			zgwj_integral = #{zgwjIntegral},
+			kjsc_integral = #{kjscIntegral},
+			zy_integral = #{zyIntegral},
+			tgzx_integral = #{tgzxIntegral},
+			jsdd_integral = #{jsddIntegral},
+			tgdd_integral = #{tgddIntegral},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			del_flag = #{delFlag}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE sys_config SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

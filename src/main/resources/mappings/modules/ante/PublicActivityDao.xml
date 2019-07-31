@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ambition.agile.modules.ante.dao.PublicActivityDao">
+    
+	<sql id="publicActivityColumns">
+		a.id AS "id",
+		a.title AS "title",
+		a.content AS "content",
+		a.create_name AS "createName",
+		a.org_name AS "orgName",
+		a.access_count AS "accessCount",
+		a.parter_num AS "parterNum",
+		a.start_time AS "startTime",
+		a.end_time AS "endTime",
+		a.create_date AS "createDate",
+		a.create_by AS "createBy.id",
+		a.update_date AS "updateDate",
+		a.update_by AS "updateBy.id",
+		a.org_id AS "orgId",
+		a.del_flag AS "delFlag",
+		a.check_status AS "checkStatus",
+		a.activity_status AS "activityStatus",
+		a.remarks AS "remarks"
+	</sql>
+	
+	<sql id="publicActivityJoins">
+	</sql>
+    
+	<select id="get" resultType="PublicActivity">
+		SELECT 
+			<include refid="publicActivityColumns"/>
+		FROM public_activity a
+		<include refid="publicActivityJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="PublicActivity">
+		SELECT 
+			<include refid="publicActivityColumns"/>
+		FROM public_activity a
+		<include refid="publicActivityJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="title != null and title != ''">
+				AND a.title LIKE 
+					<if test="dbName == 'oracle'">'%'||#{title}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{title}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{title},'%')</if>
+			</if>
+			<if test="checkStatus != null">
+				AND a.check_status = #{checkStatus}
+			</if>
+			<if test="organization !=null  and organization != ''">
+				AND a.org_id IN(${organization})
+			</if>
+			<if test="activityStatus != null">
+				AND a.activity_status = #{activityStatus}
+			</if>
+			<!-- <choose>
+				<when test="createName != null and createName != ''">
+					AND a.create_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{createName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{createName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{createName},'%')</if>
+				</when>
+				<otherwise>
+					<if test="status == null or status == ''">
+						AND a.status <![CDATA[>]]> 2
+					</if>
+				</otherwise>
+			</choose> -->
+			<if test="createName != null and createName != ''">
+					AND a.create_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{createName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{createName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{createName},'%')</if>
+			</if>
+			<if test="orgId != null and orgId != ''">
+					AND a.org_id = #{orgId} 
+			</if>
+			<if test="orgName != null and orgName != ''">
+				AND a.org_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{orgName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{orgName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{orgName},'%')</if>
+			</if>
+			<if test="startTime != null and startTime != ''">
+				AND a.start_time = #{startTime}
+			</if>
+			<if test="endTime != null and endTime != ''">
+				AND a.end_time = #{endTime}
+			</if>
+			<if test="beginUpdateDate != null and endUpdateDate != null and beginUpdateDate != '' and endUpdateDate != ''">
+				AND a.update_date BETWEEN #{beginUpdateDate} AND #{endUpdateDate}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PublicActivity">
+		SELECT 
+			<include refid="publicActivityColumns"/>
+		FROM public_activity a
+		<include refid="publicActivityJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findTop3List" resultType="PublicActivity">
+		SELECT 
+			<include refid="publicActivityColumns"/>
+		FROM public_activity a
+		<include refid="publicActivityJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="orgId != null and orgId != ''">
+			AND a.org_id = #{orgId}
+			</if>
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+		LIMIT 3
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO public_activity(
+			title,
+			content,
+			check_status,
+			activity_status,
+			create_name,
+			org_name,
+			start_time,
+			end_time,
+			create_date,
+			create_by,
+			update_date,
+			update_by,
+			org_id,
+			del_flag,
+			remarks
+		) VALUES (
+			#{title},
+			#{content},
+			#{checkStatus},
+			#{activityStatus},
+			#{createName},
+			#{orgName},
+			#{startTime},
+			#{endTime},
+			#{createDate},
+			#{createBy.id},
+			#{updateDate},
+			#{updateBy.id},
+			#{orgId},
+			#{delFlag},
+			#{remarks}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE public_activity SET 	
+			title = #{title},
+			content = #{content},
+			check_status = #{checkStatus},
+			activity_status = #{activityStatus},
+			access_count = #{accessCount},
+			parter_num = #{parterNum},
+			start_time = #{startTime},
+			end_time = #{endTime},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id},
+			del_flag = #{delFlag},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE public_activity SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

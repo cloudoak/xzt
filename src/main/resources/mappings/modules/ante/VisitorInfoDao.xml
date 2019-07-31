@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ambition.agile.modules.ante.dao.VisitorInfoDao">
+    
+	<sql id="visitorInfoColumns">
+		a.id AS "id",
+		a.visitor_no AS "visitorNo",
+		u46.name AS "nickName",
+		a.sex AS "sex",
+		a.nation AS "nation",
+		a.birthday AS "birthday",
+		(year(now())-year(a.birthday)-1) + ( DATE_FORMAT(a.birthday, '%m%d') &lt;= DATE_FORMAT(NOW(), '%m%d') ) AS "age",
+		a.native_place AS "nativePlace",
+		a.phone_num AS "phoneNum",
+		a.email AS "email",
+		a.address AS "address",
+		a.is_city AS "isCity",
+		a.is_boarder AS "isBoarder",
+		a.is_student_cadre AS "isStudentCadre",
+		a.hobby AS "hobby",
+		a.speciality AS "speciality",
+		a.childhood_experience AS "childhoodExperience",
+		a.physical_conditions AS "physicalConditions",
+		a.academic_conditions AS "academicConditions",
+		a.rewards_conditions AS "rewardsConditions",
+		a.self_assessment AS "selfAssessment",
+		a.is_single_parent AS "isSingleParent",
+		a.is_lwyp AS "isLwyp",
+		a.family_constellation AS "familyConstellation",
+		a.father_name AS "fatherName",
+		a.father_age AS "fatherAge",
+		a.father_phone AS "fatherPhone",
+		a.father_education AS "fatherEducation",
+		a.father_duty AS "fatherDuty",
+		a.father_job AS "fatherJob",
+		a.mother_name AS "motherName",
+		a.mother_age AS "motherAge",
+		a.mother_phone AS "motherPhone",
+		a.mother_education AS "motherEducation",
+		a.mother_duty AS "motherDuty",
+		a.mother_job AS "motherJob",
+		a.is_family_history AS "isFamilyHistory",
+		a.family_history AS "familyHistory",
+		a.family_relationship AS "familyRelationship",
+		a.family_information AS "familyInformation",
+		a.is_poverty AS "isPoverty",
+		a.household_income AS "householdIncome",
+		a.household_bs_total AS "householdBsTotal",
+		a.household_total AS "householdTotal",
+		a.user_id AS "user.id",
+		a.user_id AS "userId",
+		a.remarks AS "remarks",
+		a.create_date AS "createDate",
+		a.create_by AS "createBy.id",
+		a.update_date AS "updateDate",
+		a.update_by AS "updateBy.id",
+		a.org_id AS "orgId",
+		a.del_flag AS "delFlag",
+		a.status AS "status",
+		u46.login_name AS "user.loginName",
+		u46.name AS "user.name",
+		u46.password AS "password",
+		u46.score AS "user.score",
+		u46.login_date AS "user.loginDate",
+		o.id AS "org.id",
+		o.name AS "org.name"
+	</sql>
+	
+	<sql id="visitorInfoJoins">
+		LEFT JOIN sys_user u46 ON u46.id = a.user_id
+		LEFT JOIN sys_office o ON o.id = a.org_id
+	</sql>
+    
+	<select id="get" resultType="VisitorInfo">
+		SELECT 
+			<include refid="visitorInfoColumns"/>
+		FROM visitor_info a
+		<include refid="visitorInfoJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getUserByUserId" resultType="VisitorInfo">
+		SELECT 
+			<include refid="visitorInfoColumns"/>
+		FROM visitor_info a
+		<include refid="visitorInfoJoins"/>
+		WHERE a.user_id = #{userId}
+	</select>
+	
+	<select id="findList" resultType="VisitorInfo">
+		SELECT 
+			<include refid="visitorInfoColumns"/>
+		FROM visitor_info a
+		<include refid="visitorInfoJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="visitorNo != null and visitorNo != ''">
+				AND a.visitor_no = #{visitorNo}
+			</if>
+			<if test="user != null and user.name != null and user.name != ''">
+				AND u46.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{user.name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{user.name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{user.name},'%')</if>
+			</if>
+			<if test="sex != null and sex != ''">
+				AND a.sex = #{sex}
+			</if>
+			<if test="nation != null and nation != ''">
+				AND a.nation = #{nation}
+			</if>
+			<if test="beginAge != null and endAge != null and beginAge != '' and endAge != ''">
+				AND a.age BETWEEN #{beginAge} AND #{endAge}
+			</if>
+			<if test="nativePlace != null and nativePlace != ''">
+				AND a.native_place = #{nativePlace}
+			</if>
+			<if test="isCity != null and isCity != ''">
+				AND a.is_city = #{isCity}
+			</if>
+			<if test="isBoarder != null and isBoarder != ''">
+				AND a.is_boarder = #{isBoarder}
+			</if>
+			<if test="isStudentCadre != null and isStudentCadre != ''">
+				AND a.is_student_cadre = #{isStudentCadre}
+			</if>
+			<if test="isSingleParent != null and isSingleParent != ''">
+				AND a.is_single_parent = #{isSingleParent}
+			</if>
+			<if test="isLwyp != null and isLwyp != ''">
+				AND a.is_lwyp = #{isLwyp}
+			</if>
+			<if test="isFamilyHistory != null and isFamilyHistory != ''">
+				AND a.is_family_history = #{isFamilyHistory}
+			</if>
+			<if test="isPoverty != null and isPoverty != ''">
+				AND a.is_poverty = #{isPoverty}
+			</if>
+			<if test="status != null">
+				AND a.status = #{status}
+			</if>
+			<if test="organization !=null  and organization != ''">
+				AND a.org_id IN(${organization})
+			</if>
+			<if test="orgId != null and orgId != ''">
+			 	AND a.org_id = #{orgId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="VisitorInfo">
+		SELECT 
+			<include refid="visitorInfoColumns"/>
+		FROM visitor_info a
+		<include refid="visitorInfoJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="orgId != null and orgId != ''">
+			 AND a.org_id = #{orgId}
+			</if>
+			<if test="organization != null and organization != ''">
+			 AND a.org_id IN (${organization})
+			</if>
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="getVisitorInfoScoreList" resultType="VisitorInfo">
+		SELECT 
+			<include refid="visitorInfoColumns"/>
+		FROM visitor_info a
+		<include refid="visitorInfoJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL} AND u46.score is not NULL
+			<if test="visitorNo != null and visitorNo != ''">
+				AND a.visitor_No LIKE CONCAT('%',#{visitorNo},'%')
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO visitor_info(
+			visitor_no,
+			nick_name,
+			sex,
+			nation,
+			birthday,
+			age,
+			native_place,
+			phone_num,
+			email,
+			address,
+			is_city,
+			is_boarder,
+			is_student_cadre,
+			hobby,
+			speciality,
+			childhood_experience,
+			physical_conditions,
+			academic_conditions,
+			rewards_conditions,
+			self_assessment,
+			is_single_parent,
+			is_lwyp,
+			family_constellation,
+			father_name,
+			father_age,
+			father_phone,
+			father_education,
+			father_duty,
+			father_job,
+			mother_name,
+			mother_age,
+			mother_phone,
+			mother_education,
+			mother_duty,
+			mother_job,
+			is_family_history,
+			family_history,
+			family_relationship,
+			family_information,
+			is_poverty,
+			household_income,
+			household_bs_total,
+			household_total,
+			user_id,
+			remarks,
+			create_date,
+			create_by,
+			update_date,
+			update_by,
+			org_id,
+			del_flag,
+			status
+		) VALUES (
+			#{visitorNo},
+			#{nickName},
+			#{sex},
+			#{nation},
+			#{birthday},
+			#{age},
+			#{nativePlace},
+			#{phoneNum},
+			#{email},
+			#{address},
+			#{isCity},
+			#{isBoarder},
+			#{isStudentCadre},
+			#{hobby},
+			#{speciality},
+			#{childhoodExperience},
+			#{physicalConditions},
+			#{academicConditions},
+			#{rewardsConditions},
+			#{selfAssessment},
+			#{isSingleParent},
+			#{isLwyp},
+			#{familyConstellation},
+			#{fatherName},
+			#{fatherAge},
+			#{fatherPhone},
+			#{fatherEducation},
+			#{fatherDuty},
+			#{fatherJob},
+			#{motherName},
+			#{motherAge},
+			#{motherPhone},
+			#{motherEducation},
+			#{motherDuty},
+			#{motherJob},
+			#{isFamilyHistory},
+			#{familyHistory},
+			#{familyRelationship},
+			#{familyInformation},
+			#{isPoverty},
+			#{householdIncome},
+			#{householdBsTotal},
+			#{householdTotal},
+			<!-- #{user.id}, -->
+			#{userId},
+			#{remarks},
+			#{createDate},
+			#{createBy.id},
+			#{updateDate},
+			#{updateBy.id},
+			#{orgId},
+			#{delFlag},
+			#{status}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE visitor_info SET 	
+			visitor_no = #{visitorNo},
+			nick_name = #{nickName},
+			sex = #{sex},
+			nation = #{nation},
+			birthday = #{birthday},
+			age = #{age},
+			native_place = #{nativePlace},
+			phone_num = #{phoneNum},
+			email = #{email},
+			address = #{address},
+			is_city = #{isCity},
+			is_boarder = #{isBoarder},
+			is_student_cadre = #{isStudentCadre},
+			hobby = #{hobby},
+			speciality = #{speciality},
+			childhood_experience = #{childhoodExperience},
+			physical_conditions = #{physicalConditions},
+			academic_conditions = #{academicConditions},
+			rewards_conditions = #{rewardsConditions},
+			self_assessment = #{selfAssessment},
+			is_single_parent = #{isSingleParent},
+			is_lwyp = #{isLwyp},
+			family_constellation = #{familyConstellation},
+			father_name = #{fatherName},
+			father_age = #{fatherAge},
+			father_phone = #{fatherPhone},
+			father_education = #{fatherEducation},
+			father_duty = #{fatherDuty},
+			father_job = #{fatherJob},
+			mother_name = #{motherName},
+			mother_age = #{motherAge},
+			mother_phone = #{motherPhone},
+			mother_education = #{motherEducation},
+			mother_duty = #{motherDuty},
+			mother_job = #{motherJob},
+			is_family_history = #{isFamilyHistory},
+			family_history = #{familyHistory},
+			family_relationship = #{familyRelationship},
+			family_information = #{familyInformation},
+			is_poverty = #{isPoverty},
+			household_income = #{householdIncome},
+			household_bs_total = #{householdBsTotal},
+			household_total = #{householdTotal},
+			user_id = #{user.id},
+			remarks = #{remarks},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id},
+			org_id = #{orgId},
+			del_flag = #{delFlag},
+			status = #{status}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE visitor_info SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<select id="getVisitorInfoList" resultType="VisitorInfo">
+		SELECT 
+			a.id AS "id",
+			a.visitor_no AS "visitorNo",
+			u46.name AS "user.name",
+			a.nick_name AS "nickName"
+		FROM visitor_info a
+		<include refid="visitorInfoJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="user != null and user.name != null and user.name != ''">
+				AND u46.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{user.name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{user.name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{user.name},'%')</if>
+			</if>
+			<if test="orgId != null and orgId != ''">
+				AND a.org_id = #{orgId}
+			</if>
+		</where>
+	</select>
+	
+	
+</mapper>

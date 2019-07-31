@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ambition.agile.modules.counsel.dao.ScheduleRegularDao">
+    
+	<sql id="scheduleRegularColumns">
+		a.id AS "id",
+		a.week AS "week",
+		a.counselor_id AS "counselorId",
+		a.counselor_name AS "counselorName",
+		a.begin_time AS "beginTime",
+		a.end_time AS "endTime",
+		a.org_id AS "orgId",
+		a.creator_id AS "creatorId",
+		a.create_time AS "createTime"
+	</sql>
+	
+	<sql id="scheduleRegularJoins">
+	</sql>
+    
+	<select id="get" resultType="ScheduleRegular">
+		SELECT 
+			<include refid="scheduleRegularColumns"/>
+		FROM schedule_regular a
+		<include refid="scheduleRegularJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ScheduleRegular">
+		SELECT 
+			<include refid="scheduleRegularColumns"/>
+		FROM schedule_regular a
+		<include refid="scheduleRegularJoins"/>
+		<where>
+			
+			<if test="week != null and week != ''">
+				AND a.week = #{week}
+			</if>
+			<if test="counselorName != null and counselorName != ''">
+				AND a.counselor_name = #{counselorName}
+			</if>
+			<if test="orgId != null and orgId != ''">
+				AND a.org_id = #{orgId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ScheduleRegular">
+		SELECT 
+			<include refid="scheduleRegularColumns"/>
+		FROM schedule_regular a
+		<include refid="scheduleRegularJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO schedule_regular(
+			week,
+			counselor_id,
+			counselor_name,
+			begin_time,
+			end_time,
+			org_id,
+			creator_id,
+			create_time
+		) VALUES (
+			#{week},
+			#{counselorId},
+			#{counselorName},
+			#{beginTime},
+			#{endTime},
+			#{orgId},
+			#{creatorId},
+			#{createTime}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE schedule_regular SET 	
+			week = #{week},
+			counselor_id = #{counselorId},
+			counselor_name = #{counselorName},
+			begin_time = #{beginTime},
+			end_time = #{endTime},
+			org_id = #{orgId},
+			creator_id = #{creatorId},
+			create_time = #{createTime}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM schedule_regular
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

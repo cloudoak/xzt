@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ambition.agile.modules.counsel.dao.CounselRoomDao">
+    
+	<sql id="counselRoomColumns">
+		a.id AS "id",
+		a.name AS "name",
+		a.counselor_id AS "counselorId",
+		a.counselor_name AS "counselorName",
+		a.status AS "status",
+		a.photo_path AS "photoPath",
+		a.intro AS "intro",
+		a.counsel_center_id AS "counselCenterId",
+		a.create_by AS "createBy.id",
+		a.update_date AS "updateDate",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.del_flag AS "delFlag",
+		a.org_id AS "orgId"
+	</sql>
+	
+	<sql id="counselRoomJoins">
+	</sql>
+    
+	<select id="get" resultType="CounselRoom">
+		SELECT 
+			<include refid="counselRoomColumns"/>
+		FROM counsel_room a
+		<include refid="counselRoomJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CounselRoom">
+		SELECT 
+			<include refid="counselRoomColumns"/>
+		FROM counsel_room a
+		<include refid="counselRoomJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CounselRoom">
+		SELECT 
+			<include refid="counselRoomColumns"/>
+		FROM counsel_room a
+		<include refid="counselRoomJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO counsel_room(
+			name,
+			counselor_id,
+			counselor_name,
+			status,
+			photo_path,
+			intro,
+			counsel_center_id,
+			create_by,
+			update_date,
+			create_date,
+			update_by,
+			del_flag,
+			org_id
+		) VALUES (
+			#{name},
+			#{counselorId},
+			#{counselorName},
+			#{status},
+			#{photoPath},
+			#{intro},
+			#{counselCenterId},
+			#{createBy.id},
+			#{updateDate},
+			#{createDate},
+			#{updateBy.id},
+			#{delFlag},
+			#{orgId}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE counsel_room SET 	
+			name = #{name},
+			counselor_id = #{counselorId},
+			counselor_name = #{counselorName},
+			status = #{status},
+			photo_path = #{photoPath},
+			intro = #{intro},
+			counsel_center_id = #{counselCenterId},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id},
+			org_id = #{orgId}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE counsel_room SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ambition.agile.modules.jzmk.dao.ScaleTaskAnswerDao">
+    
+	<sql id="scaleTaskAnswerColumns">
+		a.id AS "id",
+		a.task_id AS "taskId",
+		a.task_user_id AS "taskUserId",
+		a.task_number AS "taskNumber",
+		a.tid AS "tid",
+		a.sid AS "sid",
+		a.answer AS "answer",
+		a.score AS "score",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.org_id AS "orgId",
+		a.del_flag AS "delFlag",
+		a.parenttid AS "parentTid"
+	</sql>
+	
+	<sql id="starColumns">
+		a.id AS "id",
+		a.task_id AS "taskId",
+		a.task_user_id AS "taskUserId",
+		a.task_number AS "taskNumber",
+		a.tid AS "tid",
+		a.sid AS "sid",
+		a.answer AS "answer",
+		a.score AS "score",
+		a.org_id AS "orgId",
+		a.parenttid AS "parentTid"
+	</sql>
+	
+	<sql id="scaleTaskAnswerJoins">
+	</sql>
+    
+	<select id="get" resultType="ScaleTaskAnswer">
+		SELECT 
+			<include refid="scaleTaskAnswerColumns"/>
+		FROM scale_task_answer a
+		<include refid="scaleTaskAnswerJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getScaleTaskAnswer" resultType="ScaleTaskAnswer">
+		SELECT 
+			<include refid="scaleTaskAnswerColumns"/>
+		FROM scale_task_answer a
+		<include refid="scaleTaskAnswerJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="taskId != null and taskId != ''">
+				AND a.task_id=${taskId}
+			</if>
+			<if test="taskUserId != null and taskUserId != ''">
+				AND a.task_user_id=${taskUserId}
+			</if>
+			<if test="tid != null and tid != ''">
+				AND a.tid=${tid}
+			</if>
+			<if test="sid != null and sid != ''">
+				AND a.sid=${sid}
+			</if>
+			<if test="parentTid != null and parentTid != ''">
+				AND a.parenttid=${parentTid}
+			</if>
+			<if test="taskNumber != null and taskNumber != ''">
+				AND a.task_number=${taskNumber}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findByTaskNumberAndTaskUserIdAndSid" resultType="java.lang.Integer">
+		SELECT DISTINCT q.number 
+		FROM question q 
+		LEFT JOIN (
+		SELECT * FROM scale_task_answer 
+		WHERE task_number=${taskNumber}
+		AND task_user_id=#{taskUserId} 
+		AND sid=#{sid} 
+		AND del_flag = #{DEL_FLAG_NORMAL})
+ 		a ON (q.id=a.parenttid OR q.id=a.tid) 
+ 		AND q.parentid='0'
+ 		WHERE q.sid=#{sid} 
+ 		AND q.del_flag = #{DEL_FLAG_NORMAL}
+ 		AND a.answer IS NULL;
+	</select>
+	
+	<select id="getSummayScore" resultType="java.lang.Double">
+		SELECT  
+		IFNULL(SUM(a.score), 0) AS "score"
+		FROM scale_task_answer a 
+		WHERE a.task_user_id=#{taskUserId} AND a.sid=#{sid} AND a.task_number = #{taskNumber} AND a.del_flag = #{DEL_FLAG_NORMAL}
+		GROUP BY a.task_user_id, a.sid
+	</select>
+	
+	<select id="getSummaryGeneScore" resultType="java.lang.Double">
+		SELECT  
+		IFNULL(SUM(a.score), 0) AS "score"
+		FROM scale_task_answer a 
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL} 
+			<if test="taskId != null and taskId != ''">
+				AND a.task_id=${taskId}
+			</if>
+			<if test="taskUserId != null and taskUserId != ''">
+				AND a.task_user_id=${taskUserId}
+			</if>
+			<if test="tid != null and tid != ''">
+				AND a.tid=${tid}
+			</if>
+			<if test="geneQuestion != null and geneQuestion != ''">
+				AND a.tid IN (${geneQuestion}) 
+			</if>
+			<if test="sid != null and sid != ''">
+				AND a.sid=${sid}
+			</if>
+			<if test="parentTid != null and parentTid != ''">
+				AND a.parenttid=${parentTid}
+			</if>
+			<if test="taskNumber != null and taskNumber != ''">
+				AND a.task_number=${taskNumber}
+			</if>
+		</where>
+	</select>
+	
+	<select id="getMaxGeneScore" resultType="java.lang.Double">
+		SELECT  
+		IFNULL(MAX(a.score),0) AS "score"
+		FROM scale_task_answer a 
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL} 
+			<if test="taskId != null and taskId != ''">
+				AND a.task_id=${taskId}
+			</if>
+			<if test="taskUserId != null and taskUserId != ''">
+				AND a.task_user_id=${taskUserId}
+			</if>
+			<if test="tid != null and tid != ''">
+				AND a.tid=${tid}
+			</if>
+			<if test="geneQuestion != null and geneQuestion != ''">
+				AND a.tid IN (${geneQuestion}) 
+			</if>
+			<if test="sid != null and sid != ''">
+				AND a.sid=${sid}
+			</if>
+			<if test="parentTid != null and parentTid != ''">
+				AND a.parenttid=${parentTid}
+			</if>
+			<if test="taskNumber != null and taskNumber != ''">
+				AND a.task_number=${taskNumber}
+			</if>
+		</where>
+	</select>
+	
+	<select id="findList" resultType="ScaleTaskAnswer">
+		SELECT 
+			<include refid="scaleTaskAnswerColumns"/>
+		FROM scale_task_answer a
+		<include refid="scaleTaskAnswerJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL} 
+			<if test="taskId != null and taskId != ''">
+				AND a.task_id=${taskId}
+			</if>
+			<if test="taskUserId != null and taskUserId != ''">
+				AND a.task_user_id=${taskUserId}
+			</if>
+			<if test="tid != null and tid != ''">
+				AND a.tid=${tid}
+			</if>
+			<if test="sid != null and sid != ''">
+				AND a.sid=${sid}
+			</if>
+			<if test="parentTid != null and parentTid != ''">
+				AND a.parenttid=${parentTid}
+			</if>
+			<if test="geneQuestion != null and geneQuestion != ''">
+				AND a.tid IN (${geneQuestion}) 
+			</if>
+			<if test="taskNumber != null and taskNumber != ''">
+				AND a.task_number=${taskNumber}
+			</if>
+			<if test="score != null">
+				AND a.score=${score}
+			</if>
+		</where>
+		<choose>
+			<when test="taskId !=null and taskId != ''">
+				ORDER BY a.tid ASC
+			</when>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.tid ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ScaleTaskAnswer">
+		SELECT 
+			<include refid="scaleTaskAnswerColumns"/>
+		FROM scale_task_answer a
+		<include refid="scaleTaskAnswerJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO scale_task_answer(
+			task_id,
+			task_user_id,
+			task_number,
+			tid,
+			sid,
+			answer,
+			score,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			org_id,
+			del_flag,
+			parenttid
+		) VALUES (
+			#{taskId},
+			#{taskUserId},
+			#{taskNumber},
+			#{tid},
+			#{sid},
+			#{answer},
+			#{score},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{orgId},
+			#{delFlag},
+			#{parentTid}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE scale_task_answer SET 	
+		    task_id = #{taskId},
+			task_user_id = #{taskUserId},
+			task_number = #{taskNumber},
+			tid = #{tid},
+			sid = #{sid},
+			answer = #{answer},
+			score = #{score},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			org_id = #{orgId},
+			del_flag = #{delFlag},
+			parenttid = #{parentTid}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE scale_task_answer SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

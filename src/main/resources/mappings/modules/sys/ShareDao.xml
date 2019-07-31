@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ambition.agile.modules.sys.dao.ShareDao">
+    
+	<sql id="shareColumns">
+		a.id AS "id",
+		a.user_id AS "user.id",
+		a.data_type AS "dataType",
+		a.data_link AS "dataLink",
+		a.score AS "score",
+		a.remark AS "remark",
+		a.create_date AS "createDate",
+		a.create_by AS "createBy.id",
+		a.update_date AS "updateDate",
+		a.update_by AS "updateBy.id",
+		a.org_id AS "orgId",
+		a.status AS "status",
+		a.del_flag AS "delFlag",
+		u2.name AS "user.name"
+	</sql>
+	
+	<sql id="shareJoins">
+		LEFT JOIN sys_user u2 ON u2.id = a.user_id
+	</sql>
+    
+	<select id="get" resultType="Share">
+		SELECT 
+			<include refid="shareColumns"/>
+		FROM share a
+		<include refid="shareJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Share">
+		SELECT 
+			<include refid="shareColumns"/>
+		FROM share a
+		<include refid="shareJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="user != null and user.name != null and user.name != ''">
+				AND u2.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{user.name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{user.name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{user.name},'%')</if>
+			</if>
+			<if test="status != null">
+				AND a.status = #{status}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Share">
+		SELECT 
+			<include refid="shareColumns"/>
+		FROM share a
+		<include refid="shareJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO share(
+			id,
+			user_id,
+			data_type,
+			data_link,
+			score,
+			remark,
+			create_date,
+			create_by,
+			update_date,
+			update_by,
+			org_id,
+			status,
+			del_flag
+		) VALUES (
+			#{id},
+			#{user.id},
+			#{dataType},
+			#{dataLink},
+			#{score},
+			#{remark},
+			#{createDate},
+			#{createBy.id},
+			#{updateDate},
+			#{updateBy.id},
+			#{orgId},
+			#{status},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE share SET 	
+			user_id = #{user.id},
+			data_type = #{dataType},
+			data_link = #{dataLink},
+			score = #{score},
+			remark = #{remark},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id},
+			org_id = #{orgId},
+			status = #{status}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE share SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

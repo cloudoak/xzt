@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ambition.agile.modules.relax.dao.SuccessCaseDao">
+    
+	<sql id="successCaseColumns">
+		a.id AS "id",
+		a.name AS "name",
+		a.is_public AS "isPublic",
+		a.path AS "path",
+		a.intro AS "intro",
+		a.creator_id AS "creatorId",
+		a.creator_name AS "creatorName",
+		a.org_id AS "orgId",
+		a.org_name AS "orgName",
+		a.update_date AS "updateDate",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="successCaseJoins">
+	</sql>
+    
+	<select id="get" resultType="SuccessCase">
+		SELECT 
+			<include refid="successCaseColumns"/>
+		FROM success_case a
+		<include refid="successCaseJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="SuccessCase">
+		SELECT 
+			<include refid="successCaseColumns"/>
+		FROM success_case a
+		<include refid="successCaseJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="isPublic != null and isPublic != ''">
+				AND a.is_public = #{isPublic}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="SuccessCase">
+		SELECT 
+			<include refid="successCaseColumns"/>
+		FROM success_case a
+		<include refid="successCaseJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+		
+	<insert id="insert">
+		INSERT INTO success_case(
+			name,
+			is_public,
+			path,
+			intro,
+			creator_id,
+			creator_name,
+			org_id,
+			org_name,
+			update_date,
+			create_date,
+			update_by,
+			del_flag
+		) VALUES (
+			#{name},
+			#{isPublic},
+			#{path},
+			#{intro},
+			#{creatorId},
+			#{creatorName},
+			#{orgId},
+			#{orgName},
+			#{updateDate},
+			#{createDate},
+			#{updateBy.id},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE success_case SET 	
+			name = #{name},
+			is_public = #{isPublic},
+			path = #{path},
+			intro = #{intro},
+			creator_id =#{creatorId},
+			creator_name =#{creatorName},
+			org_id =#{orgId},
+			org_name =#{orgName},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE success_case SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

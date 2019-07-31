@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans           
+                http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+                
+	<bean name="publicActivity" class="org.springframework.scheduling.quartz.JobDetailBean">  
+		<property name="jobClass" value="com.ambition.agile.modules.scheduler.PublicActivitySchedulerService" />
+	</bean>
+	
+	<!-- 定时任务：订单 -->
+	<bean id="publicActivityTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="publicActivity" />
+		</property>
+		<!-- cron表达式 -->
+		<property name="cronExpression">
+			<value>11 35 13 * * ? *</value>
+		</property>
+	</bean>
+	
+	 <!-- 总管理类 如果将lazy-init='false'那么容器启动就会执行调度程序  -->
+    <bean id="startQuertz" lazy-init="false" autowire="no" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+         <property name="triggers">
+             <list>
+				<ref bean="publicActivityTrigger"/><!-- 公益活动 -->
+             </list>
+         </property>
+    </bean>
+    
+</beans>   

@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ambition.agile.modules.jzmk.dao.GeneDao">
+    
+	<sql id="geneColumns">
+		a.id AS "id",
+		a.tid AS "tid",
+		a.type_id AS "typeId",
+		a.name AS "name",
+		a.enname AS "enname",
+		a.short_name AS "shortName",
+		a.number AS "number",
+		a.formula AS "formula",
+		a.question AS "question",
+		a.scoring_formula AS "scoringFormula",
+		a.max_value AS "maxValue",
+		a.min_value AS "minValue",
+		a.standard_value AS "standardValue",
+		a.avg_value AS "avgValue",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.org_id AS "orgId",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="geneJoins">
+	</sql>
+    
+	<select id="get" resultType="Gene">
+		SELECT 
+			<include refid="geneColumns"/>
+		FROM gene a
+		<include refid="geneJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Gene">
+		SELECT 
+			<include refid="geneColumns"/>
+		FROM gene a 
+		<include refid="geneJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="tid != null and tid != ''">
+				AND a.tid = #{tid}
+			</if>
+			<if test="typeId != null and typeId != ''">
+				AND a.type_id = #{typeId}
+			</if>
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="question != null and question != ''">
+				AND a.question = #{question}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.number ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findMaxNumber" resultType="java.lang.Integer">
+		SELECT IFNULL(MAX(a.number), 0) AS "number" FROM gene a
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="tid != null and tid != ''">
+				AND a.tid = #{tid}
+			</if>
+		</where>
+	</select>
+	
+	<select id="findAllList" resultType="Gene">
+		SELECT 
+			<include refid="geneColumns"/>
+		FROM gene a
+		<include refid="geneJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.number ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findMaxGene" resultType="Gene">
+		SELECT <include refid="geneColumns"/> FROM gene a
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL} AND a.number &gt; #{number} AND a.tid = #{tid}
+		ORDER BY a.number ASC 
+		LIMIT 1;
+	</select>
+	
+	<select id="findMinGene" resultType="Gene">
+		SELECT <include refid="geneColumns"/> FROM gene a
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL} AND a.number &lt; #{number} AND a.tid = #{tid} 
+		ORDER BY a.number DESC 
+		LIMIT 1;
+	</select>
+	
+	<insert id="insertGeneBatchs">
+		<selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
+			SELECT LAST_INSERT_ID() AS "id"
+		</selectKey>
+		INSERT INTO gene(
+			tid,
+			type_id,
+			name,
+			enname,
+			short_name,
+			number,
+			formula,
+			question,
+			scoring_formula,
+			max_value,
+			min_value,
+			standard_value,
+			avg_value,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			org_id,
+			del_flag
+		) 
+		VALUES 
+		<foreach collection="list" item="gene" index="index" separator=",">
+			(
+				#{gene.tid},
+				#{gene.typeId},
+				#{gene.name},
+				#{gene.enname},
+				#{gene.shortName},
+				#{gene.number},
+				#{gene.formula},
+				#{gene.question},
+				#{gene.scoringFormula},
+				#{gene.maxValue},
+				#{gene.minValue},
+				#{gene.standardValue},
+				#{gene.avgValue},
+				#{gene.createBy.id},
+				#{gene.createDate},
+				#{gene.updateBy.id},
+				#{gene.updateDate},
+				#{gene.orgId},
+				#{gene.delFlag}
+			)
+		</foreach>
+	</insert>
+	
+	<insert id="insert">
+		INSERT INTO gene(
+			tid,
+			type_id,
+			name,
+			enname,
+			short_name,
+			number,
+			formula,
+			question,
+			scoring_formula,
+			max_value,
+			min_value,
+			standard_value,
+			avg_value,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			org_id,
+			del_flag
+		) VALUES (
+			#{tid},
+			#{typeId},
+			#{name},
+			#{enname},
+			#{shortName},
+			#{number},
+			#{formula},
+			#{question},
+			#{scoringFormula},
+			#{maxValue},
+			#{minValue},
+			#{standardValue},
+			#{avgValue},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{orgId},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE gene SET 	
+			tid = #{tid},
+			type_id = #{typeId},
+			name = #{name},
+			enname = #{enname},
+			short_name = #{shortName},
+			number = #{number},
+			formula = #{formula},
+			question = #{question},
+			scoring_formula = #{scoringFormula},
+			max_value = #{maxValue},
+			min_value = #{minValue},
+			standard_value = #{standardValue},
+			avg_value = #{avgValue},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			org_id = #{orgId},
+			del_flag = #{delFlag}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE gene SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

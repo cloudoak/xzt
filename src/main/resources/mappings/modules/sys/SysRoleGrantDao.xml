@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ambition.agile.modules.sys.dao.SysRoleGrantDao">
+    
+	<sql id="sysRoleGrantColumns">
+		a.id AS "id",
+		a.menu_id AS "menuId",
+		a.parent_id AS "parent.id",
+		a.gread AS "gread",
+		a.menu_name AS "menuName",
+		a.org_id AS "orgId",
+		a.create_date AS "createDate",
+		a.create_by AS "createBy.id",
+		a.update_date AS "updateDate",
+		a.update_by AS "updateBy.id",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="sysRoleGrantJoins">
+	</sql>
+    
+	<select id="get" resultType="SysRoleGrant">
+		SELECT 
+			<include refid="sysRoleGrantColumns"/>
+		FROM sys_role_grant a
+		<include refid="sysRoleGrantJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="SysRoleGrant">
+		SELECT 
+			<include refid="sysRoleGrantColumns"/>
+		FROM sys_role_grant a
+		<include refid="sysRoleGrantJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="menuId != null and menuId != ''">
+				AND a.menu_id = #{menuId}
+			</if>
+			<if test="parent != null and parent.id != null and parent.id != ''">
+				AND a.parent_id = #{parent.id}
+			</if>
+			<if test="gread != null and gread != ''">
+				AND a.gread = #{gread}
+			</if>
+			<if test="menuName != null and menuName != ''">
+				AND a.menu_name = #{menuName}
+			</if>
+			<if test="orgId != null and orgId != ''">
+				AND a.org_id = #{orgId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.sort ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="SysRoleGrant">
+		SELECT 
+			<include refid="sysRoleGrantColumns"/>
+		FROM sys_role_grant a
+		<include refid="sysRoleGrantJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO sys_role_grant(
+			menu_id,
+			parent_id,
+			gread,
+			menu_name,
+			org_id,
+			create_date,
+			create_by,
+			update_date,
+			update_by,
+			del_flag
+		) VALUES (
+			#{menuId},
+			#{parent.id},
+			#{gread},
+			#{menuName},
+			#{orgId},
+			#{createDate},
+			#{createBy.id},
+			#{updateDate},
+			#{updateBy.id},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE sys_role_grant SET 	
+			menu_id = #{menuId},
+			parent_id = #{parent.id},
+			gread = #{gread},
+			menu_name = #{menuName},
+			org_id = #{orgId},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id},
+			del_flag = #{delFlag}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE sys_role_grant SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

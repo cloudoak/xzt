@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ambition.agile.modules.relax.dao.IntegralUserDao">
+    
+	<sql id="integralUserColumns">
+		a.id AS "id",
+		a.integral_type AS "integralType",
+		a.content AS "content",
+		a.status AS "status",
+		a.score AS "score",
+		a.org_id AS "orgId",
+		a.user_id AS "userId",
+		a.user_name AS "userName",
+		u7.name AS "user.name",
+		a.sid AS "sid"
+	</sql>
+	
+	<sql id="integralUserJoins">
+		LEFT JOIN sys_user u7 ON u7.id = a.user_id
+	</sql>
+    
+	<select id="get" resultType="IntegralUser">
+		SELECT 
+			<include refid="integralUserColumns"/>
+		FROM integral_user a
+		<include refid="integralUserJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getIntegralUser" resultType="IntegralUser">
+		SELECT 
+			<include refid="integralUserColumns"/>
+		FROM integral_user a
+		<include refid="integralUserJoins"/>
+		WHERE a.id = #{id}
+		<if test="userId != null and userId != ''">
+			AND a.user_id=#{userId}
+		</if>
+		<if test="orgId != null and orgId != ''">
+			AND a.org_id=#{orgId}
+		</if>
+		<if test="sid != null and sid != ''">
+			AND a.sid=#{sid}
+		</if>
+		<if test="userName != null and userName != ''">
+			AND a.user_name=#{userName}
+		</if>
+	</select>
+	
+	<select id="findList" resultType="IntegralUser">
+		SELECT 
+			<include refid="integralUserColumns"/>
+		FROM integral_user a
+		<include refid="integralUserJoins"/>
+		<where>
+			<if test="integralType != null and integralType != ''">
+				AND a.integral_type = #{integralType}
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+			<if test="userName != null and userName != ''">
+				AND a.user_name = #{userName}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="IntegralUser">
+		SELECT 
+			<include refid="integralUserColumns"/>
+		FROM integral_user a
+		<include refid="integralUserJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO integral_user(
+			integral_type,
+			content,
+			status,
+			score,
+			org_id,
+			user_id,
+			user_name,
+			sid
+		) VALUES (
+			#{integralType},
+			#{content},
+			#{status},
+			#{score},
+			#{orgId},
+			#{userId},
+			#{userName},
+			#{sid}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE integral_user SET 	
+			integral_type = #{integralType},
+			content = #{content},
+			status = #{status},
+			score = #{score},
+			org_id = #{orgId},
+			user_id = #{userId},
+			user_name = #{userName},
+			sid = #{sid}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM integral_user
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

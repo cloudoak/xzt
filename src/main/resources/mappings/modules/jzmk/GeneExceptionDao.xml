@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ambition.agile.modules.jzmk.dao.GeneExceptionDao">
+    
+	<sql id="geneExceptionColumns">
+		a.id AS "id",
+		a.age_condition AS "ageCondition",
+		a.age_condition_value AS "ageConditionValue",
+		a.sex_condition_value AS "sexConditionValue",
+		a.term AS "term",
+		a.condition_value AS "conditionValue",
+		a.gid AS "gid"
+	</sql>
+	
+	<sql id="geneExceptionJoins">
+	</sql>
+    
+	<select id="get" resultType="GeneException">
+		SELECT 
+			<include refid="geneExceptionColumns"/>
+		FROM gene_exception a
+		<include refid="geneExceptionJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="GeneException">
+		SELECT 
+			<include refid="geneExceptionColumns"/>
+		FROM gene_exception a,gene g 
+		<include refid="geneExceptionJoins"/>
+		<where>
+			a.gid = g.id 
+			<if test="tid != null and tid != ''">
+				AND g.tid = #{tid}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.id
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="GeneException">
+		SELECT 
+			<include refid="geneExceptionColumns"/>
+		FROM gene_exception a
+		<include refid="geneExceptionJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.id
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO gene_exception(
+			age_condition,
+			age_condition_value,
+			sex_condition_value,
+			term,
+			condition_value,
+			gid
+		) VALUES (
+			#{ageCondition},
+			#{ageConditionValue},
+			#{sexConditionValue},
+			#{term},
+			#{conditionValue},
+			#{gid}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE gene_exception SET 	
+			age_condition = #{ageCondition},
+			age_condition_value = #{ageConditionValue},
+			sex_condition_value = #{sexConditionValue},
+			term = #{term},
+			condition_value = #{conditionValue},
+			gid = #{gid}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM gene_exception
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

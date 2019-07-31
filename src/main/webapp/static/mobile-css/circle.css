@@ -1,0 +1,49 @@
+@charset "utf-8";
+/* CSS Document */
+.circle{ padding:0.75rem 4%; background:#fff; margin-bottom:1rem; border-bottom:solid 1px #ededee;}
+.circle dl{ height:1.8rem;}
+.circle dl dt{ width:1.8rem; float:left; overflow:hidden; height:1.8rem; margin-right:0.5rem;}
+.circle dl dt img{border-radius: 50%;}
+.circle dl dd h2{ font-size:0.7rem;}
+.circle dl dd p{ font-size:0.6rem; color:#999;}
+.circle .text{ font-size:0.75rem; padding:0.75rem 0px;}
+.circle .text a{ color:#3bc8ac;}
+.circle .circlebibu{ font-size:0.75rem; margin-top:0.75rem;}
+.circle .circlebibu a{padding-right:0.5rem;background:url(../mobile-images/ico9.png) no-repeat right; color:#999;}
+.button_2{ position:absolute; bottom:1rem; width:30%; padding:0px; left:35%; z-index: 11;}
+.button_3{ padding:2rem 35% 2rem 35%;}
+
+.pinglunxq{ margin:0.75rem 4%; width:84%; background:#f6f6f6; padding:0.75rem 4%;}
+.pinglunxq p{ font-size:0.6rem; color:#666; line-height:1.5rem;}
+.pinglunxq p span{font-size:#575656; font-size:0.7rem;}
+
+.pingluntiao{ width:92%; padding:0 4%; height:2.5rem; position:absolute; background:#fff; border-top:solid 1px #ededee; bottom:0px; z-index:11;}
+.pingluntiao .text{ height:1.3rem; margin-top:0.6rem; width:82%; border:solid 1px #ededee;border-radius:1.3rem; text-indent:0.5rem; font-size:0.6rem; color:#999; line-height:1.3rem; float:left;}
+.pingluntiao .button{font-size: 0.6rem;  color: #fff; height: 1.3rem; background: #3bc8ac; border-radius: 1.3rem;text-align: center;line-height: 1.3rem; width:14%; border: 1px solid #3bc8ac;  float:right;margin-top:0.605rem;}
+
+.fabuzt{ padding:0.75rem 4% 2rem 4%; background:#fff;}
+.fabuzt textarea{ height:5rem; width:100%; border:0px; font-size:0.75rem; line-height:0.75rem; }
+.fabuzt .xztu{ height:5.45rem; width:5.45rem; background:url(../mobile-images/xz.png) no-repeat; margin-top:0.75rem;}
+.fabuzt .xztu .file{ width:100%; height:100%;opacity: 0;}
+
+.duibitu_top{ height:2.7rem; border-bottom:solid 1px #efefef; padding:0 0 0 4%; position:relative;}
+.duibitu_top .right{ height:2.7rem; background:url(../mobile-images/ico13.png) no-repeat; width:3.55rem; border-left:solid 1px #efefef; color:#3bc8ac; font-size:0.6rem; line-height:4rem; overflow:hidden; text-align:center;}
+.duibitu_top .left p{ font-size:0.6rem; color:#999; margin-top:0.5rem;}
+.duibitu_top .left .text{ background:none; color:#333; font-size:0.75rem; border:0px; width:3rem;}
+.duibitu_cer{ height:2.7rem; border-bottom:solid 1px #efefef; position:relative;}
+.duibitu_cer .xian{height:2.7rem; width:1px; background:#efefef; position:absolute; top:0px; left:50%;}
+.duibitu_cer li{ float:left; width:46%; height:2.7rem; background:url(../mobile-images/ico3.png) no-repeat right; position:relative; padding-left:4%;}
+.duibitu_cer li input{ width:90%; height:100%; background:none; border:0px; color:#666; font-size:0.75rem; line-height:3.9rem; text-align:left;}
+.duibitu_cer li span{ font-size:0.6rem; position:absolute; top:0.5rem; left:8%; color:#999;}
+.duibitu_button{padding:0rem 4%;}
+.duibitu_button ul{ background:url(../mobile-images/ico14.png) no-repeat center; width:81%; height:3rem; margin:0 auto;overflow: hidden; margin-bottom:1rem;}
+.duibitu_button ul li{ width:3,5rem; text-align:center; font-size:0.7rem;}
+.duibitu_button ul li p{ color:#fa822a; font-size:1.8rem;}
+
+.fenxiangbg{ position:absolute; width:100%; height:100%; left:0px; top:0px; background:#000;opacity: 0.5; z-index:111; display:none;}
+.fenxiang{ width:92%; position:absolute; bottom:0.75rem; left:4%; height:9.75rem;z-index:1111; background:#fff;border-radius: 0.5rem; display:none;}
+.fenxiang .top{ background:url(../mobile-images/fx.png) no-repeat center; width:100%; height:1.5rem; text-align:center; font-size:0.6rem; line-height:1.5rem; color:#727272; margin-top:1.75rem;}
+.fenxiang ul li{ width:13%; float:left; font-size:0.55rem; text-align:center; margin-left:9.6%; margin-top:0.75rem;}
+.fenxiang ul li img{ margin-bottom:0.2rem;}
+.fenxiang ul li a{ color:#333;}
+.fenxiang .guanbi{ background:url(../mobile-images/gb.png) no-repeat; width:1.2rem; height:2.35rem; position:absolute; right:4%; bottom:9.75rem;}

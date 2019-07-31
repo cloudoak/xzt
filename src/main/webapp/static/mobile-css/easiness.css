@@ -1,0 +1,53 @@
+@charset "utf-8";
+/* CSS Document */
+.Mirrorbox{ padding:0 4% 0.9rem 4%;}
+.Mirrorbanner{ float:left; margin-top:0.6rem; width:100%; margin-bottom:0.6rem;}
+.Mirrorbanner img{ float:left; border-radius: 0.5rem;}
+.Mirrorbox .text p{ font-size:0.65rem; line-height:1rem; color:#666;}
+
+.banner{ width:100%; float:left;}
+.banner img{ float:left;}
+
+.anniu{  position:absolute; bottom:1rem;  width:100%; z-index: 11;}
+.anniu input{ width:41%; margin-left:6%; float:left;}
+
+.ClassroomUl{ float:left; width:100%;}
+.ClassroomUl li{ padding:0.6rem 4%; border-bottom:solid 1px #efefef; position:relative;background: #fff; }
+.ClassroomUl li p{ width:100%; float:left; line-height:1.3rem; color:#333;}
+.ClassroomUl li p.p1{ font-size:0.8rem;}
+.ClassroomUl li p.p2{ font-size:0.7rem;}
+.ClassroomUl li p.p3{ font-size:0.7rem; color:#666666; line-height:1rem; position:relative; top:0.05rem;}
+.ClassroomUl li p .ys1{ color:#999;}
+.ClassroomUl li p .ys2{ color:#f3892d;}
+.ClassroomUl .pr12 p{padding-left: 10%; width:90%;}
+
+.labelinput{ overflow:hidden;height:2rem; position:relative;}
+.labelinput input{ position: absolute; top:-100rem;-webkit-appearance:radio;}
+.labelinput i{display: inline-block;width:0.95rem; height:0.95rem; background: url(../../images/radio.png) no-repeat; vertical-align: middle; position:relative; top:-0.1rem;}
+.labelinput input:checked+i{ background: url(../../images/radio_check.png) no-repeat; }
+
+.ClassroomUl .labelinput{ float:left; margin-top:-2rem;}
+
+.rwglul li{ padding:0.6rem 4%; border-bottom:solid 1px #efefef; position:relative;background: #fff;}
+.rwglul li p{ width:100%; float:left; line-height:1.3rem;}
+.rwglul li p.p1{ font-size:0.75rem;color:#333;}
+.rwglul li p.p2{ font-size:0.6rem; color:#999;}
+.rwglul li p.p3{ font-size:0.75rem; color:#666;}
+.rwglul li .ys{ color:#999;}
+.rwglul li em{ font-style:normal; font-size:0.6rem; padding:0.1rem 0.3rem; background:#f6f6f6; color:#999;border-radius:1rem;}
+
+.biaoti{ height:2.2rem; line-height:2.2rem; border-bottom:solid 1px #efefef; padding:0 4%;}
+.biaoti .left{ font-size:0.75rem;}
+.biaoti a{ font-size:0.75rem; color:#999; float:right;}
+
+.smpgbox{  padding:0.9rem 4% 0rem 4%; width:92%; height:4.8rem;}
+.smpgbox ul li{ width:48%; height:4.8rem;border-radius: 0.5rem; float:left;s}
+.smpgbox ul li.ys1{background:#ecedfc; float:left;}
+.smpgbox ul li.ys2{background:#e3eefc; float:right;}
+.smpgbox ul dl{ margin-top:1.47rem;}
+.smpgbox ul dt{ width:1.85rem; float:left; margin-left:0.7rem; overflow:hidden; height:2.85rem; margin-right:0.5rem;}
+.smpgbox ul dt img{border-radius: 50%;}
+.smpgbox ul dd h2{ color:#333; font-size:0.8rem;}
+.smpgbox ul dd p{ color:#999; font-size:0.6rem;}
+
+.xianshigd{ text-align:center; font-size:0.6rem; color:#999; margin:1rem 0;}

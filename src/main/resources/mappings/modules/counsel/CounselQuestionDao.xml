@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ambition.agile.modules.counsel.dao.CounselQuestionDao">
+    
+	<sql id="counselQuestionColumns">
+		a.id AS "id",
+		a.org_id AS "org.id",
+		a.ask_id AS "askId",
+		a.ask_name AS "askName",
+		a.count AS "count",
+		a.counselor_id AS "counselorId",
+		a.counselor_name AS "counselorName",
+		a.title AS "title",
+		a.content AS "content",
+		a.question_type AS "questionType",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.del_flag AS "delFlag",
+		a.org_id AS "orgId",
+		u2.name AS "user.name",
+		u2.login_name AS "user.loginName",
+		u2.email AS "user.email",
+		u3.name AS "counselor.user.name",
+		u3.id AS "counselor.user.id",
+		ca.id as "org.area.id",
+		c.name AS "org.name"
+	</sql>
+	
+	<sql id="counselQuestionJoins">
+		LEFT JOIN sys_user u2 ON u2.id = a.ask_id
+		LEFT JOIN counselor c3 ON c3.id = a.counselor_id
+		LEFT JOIN sys_user u3 ON u3.id = c3.user_id
+		LEFT JOIN sys_office c ON c.id = a.org_id
+		LEFT JOIN sys_area ca ON ca.id = c.area_id
+	</sql>
+    
+	<select id="get" resultType="CounselQuestion">
+		SELECT 
+			<include refid="counselQuestionColumns"/>
+		FROM counsel_question a
+		<include refid="counselQuestionJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CounselQuestion">
+		SELECT 
+			<include refid="counselQuestionColumns"/>
+		FROM counsel_question a
+		<include refid="counselQuestionJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="askName != null and askName != ''">
+				AND a.ask_name = #{askName}
+			</if>
+			<if test="counselorName != null and counselorName != ''">
+				AND a.counselor_name = #{counselorName}
+			</if>
+			<if test="questionType != null and questionType != ''">
+				AND a.question_type = #{questionType}
+			</if>
+			<if test="beginCreateDate != null and endCreateDate != null and beginCreateDate != '' and endCreateDate != ''">
+				AND a.create_date BETWEEN #{beginCreateDate} AND #{endCreateDate}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CounselQuestion">
+		SELECT 
+			<include refid="counselQuestionColumns"/>
+		FROM counsel_question a
+		<include refid="counselQuestionJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO counsel_question(
+			ask_id,
+			ask_name,
+			counselor_id,
+			counselor_name,
+			title,
+			content,
+			question_type,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			del_flag
+		) VALUES (
+			#{askId},
+			#{askName},
+			#{counselorId},
+			#{counselorName},
+			#{title},
+			#{content},
+			#{questionType},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE counsel_question SET 	
+			ask_id = #{askId},
+			ask_name = #{askName},
+			counselor_id = #{counselorId},
+			counselor_name = #{counselorName},
+			title = #{title},
+			content = #{content},
+			question_type = #{questionType},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE counsel_question SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

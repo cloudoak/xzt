@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ambition.agile.modules.jzmk.dao.ScaleCheckTaskDao">
+    
+	<sql id="scaleCheckTaskColumns">
+		a.id AS "id",
+		a.batch_number AS "batchNumber",
+		a.start_time AS "startTime",
+		a.end_time AS "endTime",
+		a.principal_id AS "principalId",
+		a.principal_name AS "principalName",
+		a.task_gene_ids AS "taskGeneIds",
+		a.task_user_ids AS "taskUserIds",
+		a.state AS "state",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.org_id AS "orgId",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="scaleCheckTaskJoins">
+	</sql>
+    
+	<select id="get" resultType="ScaleCheckTask">
+		SELECT 
+			<include refid="scaleCheckTaskColumns"/>
+		FROM scale_check_task a
+		<include refid="scaleCheckTaskJoins"/>
+		WHERE a.id = #{id}
+		<!-- <if test="orgId != null and orgId != ''">
+			AND a.org_id = #{orgId}
+		</if>
+		<if test="organization !=null  and organization != ''">
+			AND a.org_id IN(${organization})
+		</if> -->
+	</select>
+	
+	<select id="getBatchNumber" resultType="Integer">
+		SELECT 
+			count(*) AS batchNumber 
+		FROM scale_check_task a 
+		<include refid="scaleCheckTaskJoins"/>
+		WHERE a.create_date > CURDATE() AND a.del_flag = 0 
+		<if test="orgId != null and orgId != ''">
+			AND a.org_id = #{orgId}
+		</if>
+		<if test="organization !=null  and organization != ''">
+			AND a.org_id IN(${organization})
+		</if>
+	</select>
+	
+	<select id="findList" resultType="ScaleCheckTask">
+		SELECT 
+			<include refid="scaleCheckTaskColumns"/>
+		FROM scale_check_task a
+		<include refid="scaleCheckTaskJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="batchNumber != null and batchNumber != ''">
+				AND a.batch_number = #{batchNumber}
+			</if>
+			<if test="startTime != null and startTime != ''">
+				AND a.start_time &gt;= #{startTime}
+			</if>
+			<if test="endTime != null and endTime != ''">
+				AND a.end_time &lt;= #{endTime}
+			</if>
+			<if test="principalName != null and principalName != ''">
+				AND a.principal_name = #{principalName}
+			</if>
+			<if test="orgId != null and orgId != ''">
+				AND a.org_id = #{orgId}
+			</if>
+			<if test="organization !=null  and organization != ''">
+				AND a.org_id IN(${organization})
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ScaleCheckTask">
+		SELECT 
+			<include refid="scaleCheckTaskColumns"/>
+		FROM scale_check_task a
+		<include refid="scaleCheckTaskJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="orgId != null and orgId != ''">
+				AND a.org_id = #{orgId}
+			</if>
+			<if test="organization !=null  and organization != ''">
+				AND a.org_id IN(${organization})
+			</if>
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO scale_check_task(
+			batch_number,
+			start_time,
+			end_time,
+			principal_id,
+			principal_name,
+			task_gene_ids,
+			task_user_ids,
+			state,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			org_id,
+			del_flag
+		) VALUES (
+			#{batchNumber},
+			#{startTime},
+			#{endTime},
+			#{principalId},
+			#{principalName},
+			#{taskGeneIds},
+			#{taskUserIds},
+			#{state},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{orgId},
+			#{delFlag}
+		)
+		<selectKey resultType="Integer" order="AFTER" keyProperty="Id">
+            SELECT LAST_INSERT_ID() AS Id
+        </selectKey>
+	</insert>
+	
+	<update id="update">
+		UPDATE scale_check_task SET 	
+			batch_number = #{batchNumber},
+			start_time = #{startTime},
+			end_time = #{endTime},
+			principal_id = #{principalId},
+			principal_name = #{principalName},
+			task_gene_ids = #{taskGeneIds},
+			task_user_ids = #{taskUserIds},
+			state = #{state},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			org_id = #{orgId},
+			del_flag = #{delFlag}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE scale_check_task SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

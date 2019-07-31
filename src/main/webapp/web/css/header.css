@@ -1,0 +1,252 @@
+/*------ 头部样式开始----------*/
+.transition {
+    -webkit-transition: all 0.25s ease-out;
+    transition: all 0.25s ease-out;
+}
+.header {
+    width: 100%;
+    margin: 0 auto;
+    padding-bottom: 36px;
+    overflow: hidden;
+    background: #f9f9f9;
+}
+.header .wrapper{
+    margin: 0 auto;
+    width: 97.6%;
+}
+.header .logo {
+    width: 26%;
+    margin-left: 5px;
+    padding-top: 15px;
+}
+.header .logo img {
+    min-width: 325px;
+}
+.header .sidebar {
+    width: 73%;
+    margin-top: 30px;
+}
+.header .sidebar .nav {
+    width: 644px;
+    margin-right: 19px;
+}
+.header .nav li {
+    font-size: 16px;
+    padding: 0 22px;
+    line-height: 35px;
+    display: inline-block;
+    float: left;
+}
+.header .nav .passport {
+    display: none;
+}
+.header .nav li a {
+    display: block;
+}
+.header .nav li.current {
+    background: #43bb53;
+    -webkit-border-radius: 5px;
+     -moz-border-radius: 5px;
+          border-radius: 5px;
+}
+.header .nav li.current  a {
+    color: #fff;
+}
+
+.header .entrance {
+    width: 122px;
+    text-align: right;
+}
+.header .entrance-btn {
+    width: 58px;
+    height: 26px;
+    line-height: 26px;
+    color: #fff;
+    font-size: 14px;
+    display: inline-block;
+    text-align: center;
+}
+.header .login {
+    background: #43bb53;
+}
+.header .signup {
+    background: #01b8e2;
+}
+.header .collapsed {
+    display: none;
+    background: url(../images/collapsed.jpg) no-repeat center;
+    width: 40px;
+    height: 24px;
+    margin-left: 20px;
+    background-size: 100%;
+    position: relative;
+    z-index: 100;
+    cursor: pointer;
+}
+.header .close {
+    background-image: url(../images/close.png);
+}
+/*------ 头部样式结束----------*/
+
+/*------页底开始----------*/
+.footer {
+    background: #4bc05a;
+    color: #fff;
+    font-size: 12px;
+    text-align: center;
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    overflow: hidden;
+}
+.footer .record {
+    margin: 0 18px;
+}
+.footer-mobile {
+    background: transparent;
+    color: #343434;
+    font-size: 12px;
+    display: none;
+    text-align: center;
+    width: 100%;
+    bottom: 20px;
+    position: absolute;
+}
+/*------页底结束----------*/
+/*------- 适配开始 ----------- */
+@media only screen and (max-width: 1109px) {
+    .header .sidebar .nav,
+    .header .sidebar .entrance {
+        display: none;
+    }
+    .header .collapsed {
+        display: block;
+    }
+}
+@media only screen and (max-width: 639px) {
+    body {
+        position: relative;
+    }
+    .header {
+        padding-bottom: 30px;
+    }
+    .header .logo {
+        width: 55%;
+    }
+    .header .logo img {
+        min-width: 296px;
+    }
+    .header .sidebar {
+        width: 43%;
+    }
+    .footer {
+        display: none;
+    }
+    .footer-mobile {
+        display: block;
+    }
+}
+@media only screen and (max-width: 550px) {
+    body {
+        background: #f9f9f9;
+    }
+    .header {
+        background: #fff;
+    }
+}
+@media only screen and (max-width: 479px) {
+    .header .logo {
+        width: 66%;
+    }
+    .header .logo img {
+        min-width: 252px;
+    }
+    .header .sidebar {
+        width: 32%;
+        padding-top: 6px;
+    }
+    .header .entrance {
+        width: 69%;
+        float: left;
+        text-align: right;
+    }
+    .header .entrance-btn {
+        width: 42.6%;
+        height: 17px;
+    }
+    .header .entrance-btn span {
+        display: block;
+        -webkit-transform: scale(.8);
+     	-moz-transform: scale(.8);
+      	-ms-transform: scale(.8);
+       	-o-transform: scale(.8);
+        transform: scale(.8);
+        line-height: 20px;
+    }
+    .header .collapsed {
+        width: 27px;
+        height: 20px;
+        margin-left: 10px;
+    }
+}
+@media only screen and (max-width: 380px) {
+    .header {
+        padding-bottom: 15px;
+    }
+    .header .logo {
+        width: 60%;
+    }
+    .header .logo img {
+        min-width: 187px;
+    }
+    .header .sidebar {
+        width: 35%;
+        margin-top: 22px;
+    }
+}
+/*--------------自适应结束-------*/
+.header .sidebar .nav-table {
+    position: fixed;
+    z-index: 5;
+    bottom: 0px;
+    top: 0px;
+    right: -50%;
+    margin: 0;
+    padding: 0px;
+    width: 30%;
+    white-space: nowrap;
+    box-shadow: none;
+    border-top: 0px solid white;
+    overflow-y: auto;
+    background-color: #43bb53;
+    background: rgba(67, 187, 83, .85);
+    display: block;
+    overflow-x: hidden;
+    -webkit-transition: all .25s ease-out;
+    transition: all .25s ease-out;
+}
+.header .sidebar .active {
+    right: 0;
+    margin-right: 0;
+}
+.header .nav-table li {
+    display: block;
+    width: 100%;
+    font-size: 16px;
+    line-height: 1.2;
+    border-bottom: solid #cbcbcb 1px;
+    padding: 10px 20px;
+}
+.header .nav-table .passport {
+    display: block;
+}
+.header .nav-table li a {
+    color: #fff;
+}
+.header .nav-table li.current {
+    -webkit-border-radius: 0;
+     -moz-border-radius: 0;
+          border-radius: 0;
+          background: transparent;
+}
+

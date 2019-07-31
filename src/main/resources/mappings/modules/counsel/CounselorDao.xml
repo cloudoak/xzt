@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ambition.agile.modules.counsel.dao.CounselorDao">
+    
+	<sql id="counselorColumns">
+		a.id AS "id",
+		a.user_id AS "user.id",
+		a.org_id AS "org.id",
+		a.sex AS "sex",
+		a.age AS "age",
+		a.birthday AS "birthday",
+		a.job AS "job",
+		a.jobName AS "jobName",
+		a.instro AS "instro",
+		a.certificate_path AS "certificatePath",
+		a.apply_status AS "applyStatus",
+		a.index_flag AS "indexFlag",
+		a.inside_flag AS "insideFlag",
+		a.del_flag AS "delFlag",
+		a.status AS "status",
+		a.nation AS "nation",
+		a.approval_comments AS "approvalComments",
+		a.counselor_type AS "counselorType",
+		a.dept_id AS "deptId",
+		ur.role_id AS "user.role.id",
+		u2.name AS "user.name",
+		u2.login_name AS "user.loginName",
+		u2.email AS "user.email",
+		ca.id as "org.area.id",
+		c.name AS "org.name",
+		d.dept_name AS "department.deptName",
+		d.id AS "department.id",
+		ct.type_name AS "counselType.typeName",
+		ct.id AS "counselType.id"
+	</sql>
+	
+	<sql id="counselorOfficeColumns">
+		a.counselor_id AS "counselorId",
+		a.office_id AS "officeId",
+		u2.name AS "counselor.user.name",
+		c.id AS "counselor.id",
+		s.name AS "office.name",
+		s.id AS "office.id"
+	</sql>
+	
+	<sql id="counselorOfficeJoins">
+		LEFT JOIN counselor c ON c.id = a.counselor_id
+		LEFT JOIN sys_user u2 ON u2.id = c.user_id
+		LEFT JOIN sys_office s ON s.id = a.office_id
+	</sql>
+	
+	<sql id="counselorJoins">
+		LEFT JOIN sys_user u2 ON u2.id = a.user_id
+		LEFT JOIN sys_user_role ur ON ur.user_id = a.user_id
+		LEFT JOIN sys_office c ON c.id = a.org_id
+		LEFT JOIN sys_area ca ON ca.id = c.area_id
+		LEFT JOIN department d ON d.id = a.dept_id
+		LEFT JOIN counselor_type ct ON ct.id = a.counselor_type
+	</sql>
+    
+	<select id="get" resultType="Counselor">
+		SELECT 
+			<include refid="counselorColumns"/>
+		FROM counselor a
+		<include refid="counselorJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getUserByUserId" resultType="Counselor">
+		SELECT 
+			<include refid="counselorColumns"/>
+		FROM counselor a
+		<include refid="counselorJoins"/>
+		WHERE a.user_id = #{userId}
+	</select>
+	
+	<select id="findList" resultType="Counselor">
+		SELECT 
+			<include refid="counselorColumns"/>
+		FROM counselor a
+		<include refid="counselorJoins"/>
+		<where>
+			<if test="user != null and user.name != null and user.name != ''">
+				AND u2.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{user.name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{user.name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{user.name},'%')</if>
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+			<if test="applyStatus != null and applyStatus != ''">
+				AND a.apply_status = #{applyStatus}
+			</if>
+			<if test="insideFlag != null and insideFlag != ''">
+				AND a.inside_flag = #{insideFlag}
+			</if>
+			<if test="org !=null  and org.id != null and org.id != ''">
+				AND a.org_id = #{org.id}
+			</if>
+			<if test="organization !=null  and organization != ''">
+				AND a.org_id IN(${organization})
+			</if>
+			<if test="counselorType != null and counselorType != ''">
+				AND a.counselor_type = #{counselorType}
+			</if>
+			<if test="deptId != null and deptId != ''">
+				AND a.dept_id = #{deptId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Counselor">
+		SELECT 
+			<include refid="counselorColumns"/>
+		FROM counselor a
+		<include refid="counselorJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findTop3List" resultType="Counselor">
+		SELECT 
+			<include refid="counselorColumns"/>
+		FROM counselor a
+			<include refid="counselorJoins"/>
+		<where>	
+		<if test="indexFlag != null and indexFlag != ''">
+			a.index_flag = #{indexFlag}
+		</if>
+		<if test="status != null and status != ''">
+			AND a.status = #{status}
+		</if>
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+		LIMIT 3
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO counselor(
+			user_id,
+			sex,
+			age,
+			instro,
+			certificate_path,
+			apply_status,
+			index_flag,
+			inside_flag,
+			org_id,
+			birthday,
+			job,
+			jobName,
+			status,
+			nation,
+			approval_comments,
+			counselor_type,
+			dept_id
+		) VALUES (
+			#{userId},
+			#{sex},
+			#{age},
+			#{instro},
+			#{certificatePath},
+			#{applyStatus},
+			#{indexFlag},
+			#{insideFlag},
+			#{orgId},
+			#{birthday},
+			#{job},
+			#{jobName},
+			#{status},
+			#{nation},
+			#{approvalComments},
+			#{counselorType},
+			#{deptId}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE counselor
+	 	<trim prefix="SET" suffixOverrides=",">
+	 	<if test="null != userId and '' != userId">
+           user_id = #{userId},
+        </if>
+        <if test="null != sex and '' != sex">
+           sex = #{sex},
+        </if>
+        <if test="null != age and '' != age">
+           age = #{age},
+        </if>
+        <if test="null != birthday and '' != birthday">
+           birthday = #{birthday},
+        </if>
+	 	<if test="null != job and '' != job">
+           job = #{job},
+        </if>
+        <if test="null != jobName and '' != jobName">
+           jobName = #{jobName},
+        </if>
+        <if test="null != instro and '' != instro">
+           instro = #{instro},
+        </if>
+        <if test="null != certificatePath and '' != certificatePath">
+           certificate_path = #{certificatePath},
+        </if>
+        <if test="null != applyStatus and '' != applyStatus">
+           apply_status = #{applyStatus},
+        </if>
+        <if test="null != indexFlag and '' != indexFlag">
+           index_flag = #{indexFlag},
+        </if>
+	 	<if test="null != insideFlag and '' != insideFlag">
+           inside_flag = #{insideFlag},
+        </if>
+        <if test="null != orgId and '' != orgId">
+           org_id = #{orgId},
+        </if>
+        <if test="null != status and '' != status">
+           status = #{status},
+        </if>
+        <if test="null != approvalComments and '' != approvalComments">
+           approval_comments = #{approvalComments},
+        </if>
+        <if test="null != nation and '' != nation">
+           nation = #{nation},
+        </if>
+         <if test="null != counselorType">
+           counselor_type = #{counselorType},
+        </if>
+         <if test="null != deptId">
+           dept_id = #{deptId},
+        </if>
+		</trim>
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateIndexFlag">
+		UPDATE counselor SET
+			certificate_path = #{certificatePath},
+			apply_status = #{applyStatus},
+			index_flag = #{indexFlag},
+			inside_flag = #{insideFlag},
+			status = #{status},
+			instro = #{instro},
+			approval_comments = #{approvalComments}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateCounselor">
+		UPDATE counselor SET
+			apply_status = #{applyStatus},
+			approval_comments = #{approvalComments}
+		WHERE user_id = #{userId}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM counselor
+		WHERE id = #{id}
+	</update>
+	
+	<select id="selectCounselorOffice" resultType="CounselorOffice">
+		SELECT <include refid="counselorOfficeColumns" /> FROM counselor_office a 
+		<include refid="counselorOfficeJoins" />
+		WHERE a.counselor_id=#{counselorId}
+	</select>
+	
+	<select id="selectCounselorMenu" resultType="java.lang.Integer">
+		SELECT menu_id from counselor_menu where counselor_id=#{counselorId}
+	</select>
+	
+	<delete id="deleteCounselorMenu">
+		DELETE FROM counselor_menu WHERE counselor_id = #{id}
+	</delete>
+	
+	<insert id="insertCounselorMenu">
+		INSERT INTO counselor_menu(counselor_id, menu_id)
+		<foreach collection="menuList" item="menu" separator=" union all ">
+			SELECT #{id}, #{menu.id}
+			<if test="dbName != 'mssql'">
+			FROM dual
+			</if>
+		</foreach>
+	</insert>
+	
+	<delete id="deleteCounselorOffice">
+		DELETE FROM counselor_office WHERE counselor_id = #{id}
+	</delete>
+	
+	<insert id="insertCounselorOffice">
+		INSERT INTO counselor_office(counselor_id, office_id)
+		VALUES (
+			#{counselorId},
+			#{officeId}
+		)
+	</insert>
+	
+	<insert id="addCounselorMenu">
+		INSERT INTO counselor_menu(counselor_id, menu_id) values(${counselorId},${menuId})
+	</insert>
+	
+</mapper>

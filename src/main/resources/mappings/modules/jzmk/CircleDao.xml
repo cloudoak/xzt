@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ambition.agile.modules.jzmk.dao.CircleDao">
+    
+	<sql id="circleColumns">
+		a.id AS "id",
+		a.c_org_id AS "cOrgId",
+		a.content AS "content",
+		a.c_url AS "cUrl",
+		a.health_score AS "healthScore",
+		a.user_id AS "userId",
+		a.role AS "role",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.org_id AS "orgId",
+		a.del_flag AS "delFlag",
+		a.area_code AS "areaCode",
+		u6.name AS "userName"
+	</sql>
+	
+	<sql id="circleJoins">
+		LEFT JOIN sys_user u6 ON u6.id = a.user_id
+	</sql>
+    
+	<select id="get" resultType="Circle">
+		SELECT 
+			<include refid="circleColumns"/>
+		FROM circle a
+		<include refid="circleJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Circle">
+		SELECT 
+			<include refid="circleColumns"/>
+		FROM circle a
+		<include refid="circleJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="cOrgId != null and cOrgId != ''">
+				AND a.c_org_id = #{cOrgId}
+			</if>
+			<if test="userId != null and userId != null and userId != ''">
+				AND a.user_id LIKE 
+					<if test="dbName == 'oracle'">'%'||#{userId}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{userId}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{userId},'%')</if>
+			</if>
+			<if test="role != null and role != ''">
+				AND a.role = #{role}
+			</if>
+			<if test="createDate != null and createDate != ''">
+				AND a.create_date = #{createDate}
+			</if>
+			<if test="areaCode != null and areaCode != ''">
+				AND a.area_code = #{areaCode}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Circle">
+		SELECT 
+			<include refid="circleColumns"/>
+		FROM circle a
+		<include refid="circleJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL} 
+			<if test="areaCode != null and areaCode != ''">
+				AND a.area_code = #{areaCode}
+			</if>
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO circle(
+			c_org_id,
+			content,
+			c_url,
+			health_score,
+			user_id,
+			role,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			org_id,
+			del_flag,
+			area_code
+		) VALUES (
+			#{cOrgId},
+			#{content},
+			#{cUrl},
+			#{healthScore},
+			#{userId},
+			#{role},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{orgId},
+			#{delFlag},
+			#{areaCode}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE circle SET 	
+			c_org_id = #{cOrgId},
+			content = #{content},
+			c_url = #{cUrl},
+			health_score = #{healthScore},
+			user_id = #{userId},
+			role = #{role},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			org_id = #{orgId},
+			del_flag = #{delFlag},
+			area_code = #{areaCode} 
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE circle SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

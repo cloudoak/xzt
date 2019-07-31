@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ambition.agile.modules.counsel.dao.CounselorUserBookDao">
+    
+	<sql id="counselorUserBookColumns">
+		a.id AS "id",
+		a.counselor_id AS "counselorId",
+		a.counselor_id AS "counselor.id",
+		u2.name AS "counselor.user.name",
+		a.visitor_id AS "visitorId",
+		a.visitor_id AS "visitorInfo.id",
+		u1.name AS "visitorInfo.user.name",
+		a.consultation AS "consultation",
+		a.reservation AS "reservation",
+		a.question_type AS "questionType",
+		a.self_analysis AS "selfAnalysis",
+		a.opinion AS "opinion",
+		a.reserve_date AS "reserveDate",
+		a.begin_time AS "beginTime",
+		a.end_time AS "endTime",
+		a.description AS "description",
+		a.is_case AS "isCase",
+		a.is_owner AS "isOwner",
+		a.deal_status AS "dealStatus",
+		a.allow_user AS "allowUser",
+		a.allow_parents AS "allowParents",
+		a.undo_reason AS "undoReason"
+	</sql>
+	<sql id="counselorUserBookJoins">
+		LEFT JOIN visitor_info v ON a.visitor_id=v.id 
+		LEFT JOIN sys_user u1 ON v.user_id=u1.id
+		LEFT JOIN counselor c ON a.counselor_id=c.id 
+		LEFT JOIN sys_user u2 ON c.user_id=u2.id
+	</sql>
+   
+	<select id="get" parameterType="CounselorUserBook" resultType="CounselorUserBook">
+		SELECT 
+			<include refid="counselorUserBookColumns"/>
+		FROM counselor_user_book a
+			<include refid="counselorUserBookJoins"/>
+		<where>
+		<if test="id != null and id != ''">
+			AND a.id = #{id}
+		</if>
+		<if test="counselorId != null and counselorId != ''">
+			AND a.counselor_id = #{counselorId}
+		</if>
+		<if test="reserveDate != null and reserveDate != ''">
+			AND DATE_FORMAT(a.reserve_date, '%Y-%m-%d') = DATE_FORMAT(#{reserveDate}, '%Y-%m-%d')
+		</if>
+		<if test="beginTime != null and beginTime != ''">
+			AND a.begin_time &gt;= #{beginTime}
+		</if>
+		<if test="endTime != null and endTime != ''">
+			AND a.end_time &lt;= #{endTime}
+		</if>
+		<if test="currentTime != null and currentTime != ''">
+			AND a.end_time &gt;= #{currentTime}
+		</if>
+		</where>
+	</select>
+	
+	<select id="findList" resultType="CounselorUserBook">
+		SELECT 
+			<include refid="counselorUserBookColumns"/>
+		FROM counselor_user_book a
+		<include refid="counselorUserBookJoins"/>
+		<where>
+			<if test="counselorId != null and counselorId != ''">
+				AND a.counselor_id = #{counselorId}
+			</if>
+			<if test="visitorId != null and visitorId != ''">
+				AND a.visitor_id = #{visitorId}
+			</if>
+			<if test="consultation != null and consultation != ''">
+				AND a.consultation = #{consultation}
+			</if>
+			<if test="reservation != null and reservation != ''">
+				AND a.reservation = #{reservation}
+			</if>
+			<if test="questionType != null and questionType != ''">
+				AND a.question_type = #{questionType}
+			</if>
+			<if test="reserveDate != null and reserveDate != ''">
+				AND DATE_FORMAT(a.reserve_date, '%Y-%m-%d') = DATE_FORMAT(#{reserveDate}, '%Y-%m-%d')
+			</if>
+			<if test="beginTime != null and beginTime != ''">
+				AND a.begin_time &gt;= #{beginTime}
+			</if>
+			<if test="endTime != null and endTime != ''">
+				AND a.end_time &lt;= #{endTime}
+			</if>
+			<if test="currentTime != null and currentTime != ''">
+				AND a.end_time &gt;= #{currentTime}
+			</if>
+			<if test="dealStatus != null and dealStatus != ''">
+				AND a.deal_status = #{dealStatus}
+			</if>
+			<if test="isOwner != null and isOwner != ''">
+				AND a.is_owner = #{isOwner}
+			</if>
+			<if test="allowUser != null and allowUser != ''">
+				AND a.allow_user = #{allowUser}
+			</if>
+			<if test="allowParents != null and allowParents != ''">
+				AND a.allow_parents = #{allowParents}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CounselorUserBook">
+		SELECT 
+			<include refid="counselorUserBookColumns"/>
+		FROM counselor_user_book a
+		<include refid="counselorUserBookJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO counselor_user_book 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="counselorId != null and counselorId != ''">
+			counselor_id,
+			</if>
+			<if test="visitorId != null and visitorId != ''">
+			visitor_id,
+			</if>
+			<if test="consultation != null and consultation != ''">
+			consultation,
+			</if>
+			<if test="reservation != null and reservation != ''">
+			reservation,
+			</if>
+			<if test="questionType != null and questionType != ''">
+			question_type,
+			</if>
+			<if test="selfAnalysis != null and selfAnalysis != ''">
+			self_analysis,
+			</if>
+			<if test="opinion != null and opinion != ''">
+			opinion,
+			</if>
+			<if test="reserveDate != null and reserveDate != ''">
+			reserve_date,
+			</if>
+			<if test="beginTime != null and beginTime != ''">
+			begin_time,
+			</if>
+			<if test="endTime != null and endTime != ''">
+			end_time,
+			</if>
+			<if test="description != null and description != ''">
+			description,
+			</if>
+			<if test="isCase != null and isCase != ''">
+			is_case,
+			</if>
+			<if test="isOwner != null and isOwner != ''">
+			is_owner,
+			</if>
+			<if test="dealStatus != null and dealStatus != ''">
+			deal_status,
+			</if>
+			<if test="allowUser != null and allowUser != ''">
+			allow_user,
+			</if>
+			<if test="allowParents != null and allowParents != ''">
+			allow_parents,
+			</if>
+			<if test="undoReason != null and undoReason != ''">
+			undo_reason,
+			</if>
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="counselorId != null and counselorId != ''">
+			#{counselorId},
+			</if>
+			<if test="visitorId != null and visitorId != ''">
+			#{visitorId},
+			</if>
+			<if test="consultation != null and consultation != ''">
+			#{consultation},
+			</if>
+			<if test="reservation != null and reservation != ''">
+			#{reservation},
+			</if>
+			<if test="questionType != null and questionType != ''">
+			#{questionType},
+			</if>
+			<if test="selfAnalysis != null and selfAnalysis != ''">
+			#{selfAnalysis},
+			</if>
+			<if test="opinion != null and opinion != ''">
+			#{opinion},
+			</if>
+			<if test="reserveDate != null and reserveDate != ''">
+			#{reserveDate},
+			</if>
+			<if test="beginTime != null and beginTime != ''">
+			#{beginTime},
+			</if>
+			<if test="endTime != null and endTime != ''">
+			#{endTime},
+			</if>
+			<if test="description != null and description != ''">
+			#{description},
+			</if>
+			<if test="isCase != null and isCase != ''">
+			#{isCase},
+			</if>
+			<if test="isOwner != null and isOwner != ''">
+			#{isOwner},
+			</if>
+			<if test="dealStatus != null and dealStatus != ''">
+			#{dealStatus},
+			</if>
+			<if test="allowUser != null and allowUser != ''">
+			#{allowUser},
+			</if>
+			<if test="allowParents != null and allowParents != ''">
+			#{allowParents},
+			</if>
+			<if test="undoReason != null and undoReason != ''">
+			#{undoReason},
+			</if>
+		</trim>
+	</insert>
+	
+	<update id="update">
+		UPDATE counselor_user_book 
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="counselorId != null and counselorId != ''">
+			counselor_id = #{counselorId},
+			</if>
+			<if test="visitorId != null and visitorId != ''">
+			visitor_id = #{visitorId},
+			</if>
+			<if test="consultation != null and consultation != ''">
+			consultation = #{consultation},
+			</if>
+			<if test="reservation != null and reservation != ''">
+			reservation = #{reservation},
+			</if>
+			<if test="questionType != null and questionType != ''">
+			question_type = #{questionType},
+			</if>
+			<if test="selfAnalysis != null and selfAnalysis != ''">
+			self_analysis = #{selfAnalysis},
+			</if>
+			<if test="opinion != null and opinion != ''">
+			opinion = #{opinion},
+			</if>
+			<if test="reserveDate != null and reserveDate != ''">
+			reserve_date = #{reserveDate},
+			</if>
+			<if test="beginTime != null and beginTime != ''">
+			begin_time = #{beginTime},
+			</if>
+			<if test="endTime != null and endTime != ''">
+			end_time = #{endTime},
+			</if>
+			<if test="description != null and description != ''">
+			description = #{description},
+			</if>
+			<if test="isCase != null and isCase != ''">
+			is_case = #{isCase},
+			</if>
+			<if test="isOwner != null and isOwner != ''">
+			is_owner = #{isOwner},
+			</if>
+			<if test="dealStatus != null and dealStatus != ''">
+			deal_status = #{dealStatus},
+			</if>
+			<if test="allowUser != null and allowUser != ''">
+			allow_user = #{allowUser},
+			</if>
+			<if test="allowParents != null and allowParents != ''">
+			allow_parents = #{allowParents},
+			</if>
+			<if test="undoReason != null and undoReason != ''">
+			undo_reason = #{undoReason},
+			</if>
+		</trim>
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM counselor_user_book
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

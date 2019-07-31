@@ -1,0 +1,14 @@
+@charset "utf-8";
+/* CSS Document */
+.indexbox{ padding:0 4% 0.9rem 4%;}
+.indexbanner{ float:left; margin-top:0.9rem; width:100%;}
+.indexbanner img{ float:left; border-radius: 0.5rem;}
+.indexbox ul li{ width:30.66%; height:7.5rem;border-radius: 0.5rem; float:left; margin:0.9rem 4% 0 0;}
+.indexbox ul li a{ color:#fff; font-size:0.7rem; display:block; line-height:30px; text-align:center;}
+.indexbox ul li a img{ margin-top:2rem;}
+.indexbox ul li.ys1{background:#979cf8;}
+.indexbox ul li.ys2{background:#f26889;}
+.indexbox ul li.ys3{background:#459ff8; margin-right:0px;}
+.indexbox ul li.ys4{background:#f5a054;}
+.indexbox ul li.ys5{background:#54cdb0;}
+.indexbox ul li.ys6{background:#f1cb51; margin-right:0px;}
